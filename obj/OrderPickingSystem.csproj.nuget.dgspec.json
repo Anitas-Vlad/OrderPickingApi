@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\projects\\OrderPickingSystem\\OrderPickingSystem\\OrderPickingSystem\\OrderPickingSystem.csproj": {}
+    "C:\\Users\\avlad\\projects\\OPS\\OrderPickingSystem.csproj": {}
   },
   "projects": {
-    "C:\\projects\\OrderPickingSystem\\OrderPickingSystem\\OrderPickingSystem\\OrderPickingSystem.csproj": {
+    "C:\\Users\\avlad\\projects\\OPS\\OrderPickingSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\projects\\OrderPickingSystem\\OrderPickingSystem\\OrderPickingSystem\\OrderPickingSystem.csproj",
+        "projectUniqueName": "C:\\Users\\avlad\\projects\\OPS\\OrderPickingSystem.csproj",
         "projectName": "OrderPickingSystem",
-        "projectPath": "C:\\projects\\OrderPickingSystem\\OrderPickingSystem\\OrderPickingSystem\\OrderPickingSystem.csproj",
+        "projectPath": "C:\\Users\\avlad\\projects\\OPS\\OrderPickingSystem.csproj",
         "packagesPath": "C:\\Users\\avlad\\.nuget\\packages\\",
-        "outputPath": "C:\\projects\\OrderPickingSystem\\OrderPickingSystem\\OrderPickingSystem\\obj\\",
+        "outputPath": "C:\\Users\\avlad\\projects\\OPS\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\avlad\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -86,6 +86,24 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[7.0.12, 7.0.12]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[7.0.12, 7.0.12]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[7.0.12, 7.0.12]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[7.0.12, 7.0.12]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -94,7 +112,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100-rc.2.23502.2\\RuntimeIdentifierGraph.json"
         }
       }
     }
