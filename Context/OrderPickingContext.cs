@@ -3,9 +3,9 @@ using OrderPickingSystem.Models;
 
 namespace OrderPickingSystem.Context;
 
-public class ProjectContext : DbContext
+public class OrderPickingContext : DbContext
 {
-    public ProjectContext(DbContextOptions<ProjectContext> options) : base(options)
+    public OrderPickingContext(DbContextOptions<OrderPickingContext> options) : base(options)
     {
     }
 
@@ -15,6 +15,7 @@ public class ProjectContext : DbContext
     }
 
     public DbSet<User> Users { get; set; } = default!;
+    public DbSet<Order> Orders { get; set; } = default!;
 
     private static class ModelBuilderExtensions
     {

@@ -3,4 +3,9 @@ TODO * At least 2 API's. But this can turn into multiple/related projects.
 1. Destination API
 2. Order Picking API
 
-TODO asdasdasd
+TODO * Admin API
+- Create an API for the administration. Only there, users (workers) can be added and their rights edited.
+- ex: 
+GetAllUsers() - should not be in the workers Api.
+AddUser() - should be in the AdminApi
+ViewPaletteInfo() - should be in AdminApi
