@@ -2,10 +2,9 @@
 
 namespace OrderPickingSystem.Models;
 
-public class Item
+public class StockItem
 {
     public int Id { get; set; }
-    public int LocationId { get; set; }
     [Required] public int Name { get; set; }
     [Required] public int Quantity { get; set; }
 }

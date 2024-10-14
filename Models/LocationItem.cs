@@ -2,7 +2,7 @@
 
 namespace OrderPickingSystem.Models;
 
-public class Item
+public class LocationItem
 {
     public int Id { get; set; }
     public int LocationId { get; set; }

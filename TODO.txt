@@ -7,5 +7,15 @@ TODO * Admin API
 - Create an API for the administration. Only there, users (workers) can be added and their rights edited.
 - ex: 
 GetAllUsers() - should not be in the workers Api.
-AddUser() - should be in the AdminApi
-ViewPaletteInfo() - should be in AdminApi
+AddUser()
+EditUser()
+ViewPaletteInfo() 
+RemoveItemFromContainer() 
+
+TODO * Item types
+- StockItem - all there is in the warehouse
+- LocationItem - All there is at the location, and if it gets to 0, before a picker gets to it, 
+it will be turned into replenishment
+- Item - The one to be picked.
+
+TODO * Take in consideration the Location Floors.
