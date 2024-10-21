@@ -14,7 +14,8 @@ public class PickService : IPickService
         _context = context;
     }
 
-    public async Task<List<Pick>> QueryAllPicks() => await _context.Picks.ToListAsync();
+    public async Task<List<Pick>> QueryAllPicks() 
+        => await _context.Picks.ToListAsync();
     
     public Task<List<Pick>> QueryPicksByContainerId(int containerId)
     {
@@ -22,6 +23,11 @@ public class PickService : IPickService
     }
 
     public Task<List<Pick>> QueryPicksByOrderId(int orderId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Replenish> CreateReplenish()
     {
         throw new NotImplementedException();
     }

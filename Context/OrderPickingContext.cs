@@ -18,6 +18,7 @@ public class OrderPickingContext : DbContext
     public DbSet<Order> Orders { get; set; } = default!;
     public DbSet<Container> Containers { get; set; } = default!;
     public DbSet<Item> Items { get; set; } = default!;
+    public DbSet<LocationItem> LocationItems { get; set; } = default!;
     public DbSet<Location> Locations { get; set; } = default!;
     public DbSet<Pick> Picks { get; set; } = default!;
 

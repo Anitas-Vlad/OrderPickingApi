@@ -8,5 +8,5 @@ public class Location
     [Required] public int Isle { get; set; }
     [Required] public int Number { get; set; }
     [Required] public char Letter { get; set; } //TODO MUST ONLY ACCEPT ---[A B C or D]---
-    public LocationItem Item { get; set; }
+    public LocationItem LocationItem { get; set; }
 }
