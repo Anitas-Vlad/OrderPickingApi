@@ -9,4 +9,7 @@ public class Item
     [Required] public int Quantity { get; set; }
     
     public void SubtractItem(int quantity) => Quantity -= quantity;
+    public void RestockItem(int quantity) => Quantity += quantity;
+    public bool CheckIfQuantityIsEnoughToPick(CreatePickRequest request)
+        => request.Quantity <= Quantity;
 }

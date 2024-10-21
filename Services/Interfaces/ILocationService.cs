@@ -4,7 +4,7 @@ namespace OrderPickingSystem.Services.Interfaces;
 
 public interface ILocationService
 {
-    Task<Location> QueryLocationByID(int locationId);
-    Task<LocationItem> QueryLocationItemByID(int locationItemId);
+    Task<Location> QueryLocationById(int locationId);
     Task<Pick> CreatePick(CreatePickRequest request);
+    Task PickFromLocation(CreatePickRequest request);
 }

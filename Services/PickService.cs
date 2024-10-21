@@ -27,7 +27,7 @@ public class PickService : IPickService
         throw new NotImplementedException();
     }
 
-    public Task<Replenish> CreateReplenish()
+    public Task<Item> CreateReplenish()
     {
         throw new NotImplementedException();
     }

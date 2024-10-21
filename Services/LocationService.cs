@@ -9,27 +9,21 @@ public class LocationService : ILocationService
 {
     private readonly OrderPickingContext _context;
     private readonly IPickService _pickService;
+    private readonly IItemService _itemService;
 
-    public LocationService(OrderPickingContext context, IPickService pickService)
+    public LocationService(OrderPickingContext context, IPickService pickService, IItemService itemService)
     {
         _context = context;
         _pickService = pickService;
+        _itemService = itemService;
     }
 
-    public async Task<Location> QueryLocationByID(int locationId)
+    public async Task<Location> QueryLocationById(int locationId)
     {
         var location = await _context.Locations.SingleOrDefaultAsync(location => location.Id == locationId);
         if (location == null)
             throw new ArgumentException("Location not found.");
         return location;
-    }
-    
-    public async Task<LocationItem> QueryLocationItemByID(int locationItemId)
-    {
-        var locationItem = await _context.LocationItems.SingleOrDefaultAsync(location => location.Id == locationItemId);
-        if (locationItem == null)
-            throw new ArgumentException("Location not found.");
-        return locationItem;
     }
 
     public async Task<Pick> CreatePick(CreatePickRequest request) //TODO Maybe don t need this method
@@ -48,7 +42,7 @@ public class LocationService : ILocationService
 
     public async Task PickFromLocation(CreatePickRequest request)
     {
-        var locationItem = await QueryLocationItemByID(request.LocationId);
+        var locationItem = await _itemService.QueryItemByID(request.ItemId);
         if (!locationItem.CheckIfQuantityIsEnoughToPick(request)) 
             await _pickService.CreateReplenish();
 

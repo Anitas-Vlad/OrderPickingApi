@@ -25,7 +25,6 @@ public class ContainerService
     public async Task AddItemToContainer(int containerId, Item item) //TODO Integrate all Item updates. Location/Stock
     {
         var container = await QueryContainerById(containerId);
-
         
         
     }
