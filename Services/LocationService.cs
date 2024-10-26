@@ -42,7 +42,7 @@ public class LocationService : ILocationService
 
     public async Task PickFromLocation(CreatePickRequest request)
     {
-        var locationItem = await _itemService.QueryItemByID(request.ItemId);
+        var locationItem = await _itemService.QueryItemById(request.ItemId);
         if (!locationItem.CheckIfQuantityIsEnoughToPick(request)) 
             await _pickService.CreateReplenish();
 

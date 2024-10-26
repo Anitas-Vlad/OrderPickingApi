@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OrderPickingSystem.Context;
+using OrderPickingSystem.Services;
+using OrderPickingSystem.Services.Interfaces;
+using OrderPickingSystem.Services.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,12 +18,21 @@ var builder = WebApplication.CreateBuilder(args);
 // }
 // else
 // {
-    builder.Services.AddDbContext<OrderPickingContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("order-picking-context") ??
-                             throw new InvalidOperationException(
-                                 "Connection string 'order-picking-context' not found.")));
+builder.Services.AddDbContext<OrderPickingContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("order-picking-context") ??
+                         throw new InvalidOperationException(
+                             "Connection string 'order-picking-context' not found.")));
 // }
 
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<ILocationService, LocationService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IPickService, PickService>();
+builder.Services.AddScoped<IUserContextService, UserContextService>();
+builder.Services.AddScoped<IUserMapper, UserMapper>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthentication(options =>

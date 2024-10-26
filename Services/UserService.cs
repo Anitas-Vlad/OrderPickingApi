@@ -16,7 +16,7 @@ public class UserService : IUserService
     private readonly IUserContextService _userContextService;
     private readonly IUserMapper _userMapper;
 
-    public UserService(Context.OrderPickingContext context, IUserContextService userContextService, IUserMapper userMapper)
+    public UserService(OrderPickingContext context, IUserContextService userContextService, IUserMapper userMapper)
     {
         _context = context;
         _mailPattern = new("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");

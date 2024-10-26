@@ -1,3 +1,4 @@
+using System.Data;
 using System.Security.Claims;
 using OrderPickingSystem.Services.Interfaces;
 
@@ -21,4 +22,11 @@ public class UserContextService : IUserContextService
 
         return userId;
     }
+
+    
+    //TODO Add current OrderId to Claims
+    // public int GetOrderId()
+    // {
+    //     
+    // }
 }

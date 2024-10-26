@@ -8,8 +8,5 @@ public interface IOrderService
     Task<Order> QueryOrderById(int orderId);
     // Task<List<Pick>> QueryPicksByOrderId(int OrderId);//TODO Admin Api
     Task<Location> QueryNextLocation(int orderId);
-    Task<List<Location>> QueryPickingLocationsForOrder(int orderId);
-    Task<List<Location>> OrganizePickingLocations(List<Location> locations);
-    
-
+    Task<SortedDictionary<int, List<Location>>> QueryPickingLocationsForOrder(int orderId);
 }
