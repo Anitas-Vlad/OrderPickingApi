@@ -8,10 +8,12 @@ namespace OrderPickingSystem.Services;
 public class PickService : IPickService
 {
     private readonly OrderPickingContext _context;
+    private readonly IItemService _itemService;
 
-    public PickService(OrderPickingContext context)
+    public PickService(OrderPickingContext context, IItemService itemService)
     {
         _context = context;
+        _itemService = itemService;
     }
 
     public async Task<List<Pick>> QueryAllPicks() 
@@ -27,13 +29,31 @@ public class PickService : IPickService
         throw new NotImplementedException();
     }
 
-    public Task<Item> CreateReplenish()
-    {
-        throw new NotImplementedException();
-    }
-
     public Task<Pick> CreatePick()
     {
         throw new NotImplementedException();
     }
+
+    public Task PickFromLocation(CreatePickRequest request)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<Pick> CreatePick(CreatePickRequest request)
+        // Maybe don t need this method
+    {
+        var pick = new Pick
+        {
+            LocationId = request.LocationId,
+            ItemId = request.LocationId,
+            UserId = request.UserId,
+            ContainerId = request.ContainerId
+        };
+        //TODO much more logic to do here
+        
+        await _context.Picks.AddAsync(pick);
+        return pick;
+    }
+
+    
 }

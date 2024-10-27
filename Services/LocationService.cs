@@ -28,10 +28,25 @@ public class LocationService : ILocationService
     
     public async Task<Queue<Location>> QueryPickingLocationsQueue()
     {
-        var dictionary = await QueryPickingLocations();
+        // var dictionary = await QueryPickingLocations();
+        // var locationsQueue = OrderPickingLocationsQueue(dictionary);
+        //
+        // return locationsQueue;
+        return OrderPickingLocationsQueue(await QueryPickingLocations());
+    }
+    
+    public async Task<Queue<Location>> QueryReplenishLocationsQueue()
+    {
+        var dictionary = await QueryReplenishLocations();
+        var locationsQueue = OrderPickingLocationsQueue(dictionary);
+
+        return locationsQueue;
+    }
+
+    private Queue<Location> OrderPickingLocationsQueue(SortedDictionary<int, List<Location>> locationsDictionary)
+    {
         var locationsQueue = new Queue<Location>();
-        
-        foreach (var (key, isleLocations) in dictionary)
+        foreach (var (key, isleLocations) in locationsDictionary)
         {
             if (key % 2 == 0)
                 isleLocations.OrderBy(location => location.Number);
@@ -46,10 +61,10 @@ public class LocationService : ILocationService
 
         return locationsQueue;
     }
-    
+
     // These are all the 1st floor picking locations.
-    //TODO Maybe there should be another table in the DB for the PickingLocations so that this request is not made every time an order is starte.
-    public async Task<SortedDictionary<int, List<Location>>> QueryPickingLocations()
+    // Maybe there should be another table in the DB for the PickingLocations so that this request is not made every time an order is starte.
+    private async Task<SortedDictionary<int, List<Location>>> QueryPickingLocations()
     {
         var locations = await _context.Locations.Where(location => location.Floor == 1)
             .OrderBy(location => location.Isle).ToListAsync();
@@ -58,9 +73,20 @@ public class LocationService : ILocationService
 
         return sortedLocations;
     }
+    
+    // These are all the locations from where the reach truckers have to take Items to replenish the Picking locations on the first floor.
+    private async Task<SortedDictionary<int, List<Location>>> QueryReplenishLocations()
+    {
+        var locations = await _context.Locations.Where(location => location.Floor != 1)
+            .OrderBy(location => location.Isle).ToListAsync();
+
+        var sortedLocations = createIsleSortedLocationsDictionary(locations);
+
+        return sortedLocations;
+    }
 
 
-    public SortedDictionary<int, List<Location>> createIsleSortedLocationsDictionary(List<Location> locations)
+    private SortedDictionary<int, List<Location>> createIsleSortedLocationsDictionary(List<Location> locations)
     {
         var orderedLocations = new SortedDictionary<int, List<Location>>();
 
@@ -73,28 +99,5 @@ public class LocationService : ILocationService
         }
 
         return orderedLocations;
-    }
-
-    public async Task<Pick> CreatePick(CreatePickRequest request) //TODO Maybe don t need this method
-    {
-        var pick = new Pick
-        {
-            LocationId = request.LocationId,
-            ItemId = request.LocationId,
-            UserId = request.UserId,
-            ContainerId = request.ContainerId
-        };
-
-        await _context.Picks.AddAsync(pick);
-        return pick;
-    }
-
-    public async Task PickFromLocation(CreatePickRequest request)
-    {
-        var locationItem = await _itemService.QueryItemById(request.ItemId);
-        if (!locationItem.CheckIfQuantityIsEnoughToPick(request)) 
-            await _pickService.CreateReplenish();
-
-        var pick = await CreatePick(request);
     }
 }
