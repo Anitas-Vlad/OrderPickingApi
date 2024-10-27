@@ -10,8 +10,8 @@ public class Order
     [Required] public OrderStatus OrderStatus { get; set; } = OrderStatus.Received; //TODO String.ValueOf() for DB
     [Required] public Palette Palette { get; set; }
     [Required] public string Destination { get; set; }
-    [Required] public List<Item> Items { get; set; }
-    [Required] public List<Item> ReplenishItems { get; set; }
+    [Required] public Queue<Item> Items { get; set; }
+    [Required] public Queue<Item> ReplenishItems { get; set; }
 
     [Required(ErrorMessage = "Mobile number is required.")]
     [Phone(ErrorMessage = "Please enter a valid number.")]

@@ -20,3 +20,5 @@ it will be turned into replenishment
 
 TODO * Take in consideration the Location Floors.
 - This is not needed. Items must be generated one by one and searched for/ordered. or if there are not enough, added to the order.ReplenishItems.
+
+TODO * For now I am constantly checking for the OnGoing Order a user is Picking. I need to add it to claims or something similar so that everything is simplified.

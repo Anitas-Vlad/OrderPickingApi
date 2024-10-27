@@ -25,6 +25,55 @@ public class LocationService : ILocationService
             throw new ArgumentException("Location not found.");
         return location;
     }
+    
+    public async Task<Queue<Location>> QueryPickingLocationsQueue()
+    {
+        var dictionary = await QueryPickingLocations();
+        var locationsQueue = new Queue<Location>();
+        
+        foreach (var (key, isleLocations) in dictionary)
+        {
+            if (key % 2 == 0)
+                isleLocations.OrderBy(location => location.Number);
+            else
+                isleLocations.OrderByDescending(location => location.Number);
+
+            foreach (var isleLocation in isleLocations)
+            {
+                locationsQueue.Enqueue(isleLocation);
+            }
+        }
+
+        return locationsQueue;
+    }
+    
+    // These are all the 1st floor picking locations.
+    //TODO Maybe there should be another table in the DB for the PickingLocations so that this request is not made every time an order is starte.
+    public async Task<SortedDictionary<int, List<Location>>> QueryPickingLocations()
+    {
+        var locations = await _context.Locations.Where(location => location.Floor == 1)
+            .OrderBy(location => location.Isle).ToListAsync();
+
+        var sortedLocations = createIsleSortedLocationsDictionary(locations);
+
+        return sortedLocations;
+    }
+
+
+    public SortedDictionary<int, List<Location>> createIsleSortedLocationsDictionary(List<Location> locations)
+    {
+        var orderedLocations = new SortedDictionary<int, List<Location>>();
+
+        foreach (var location in locations)
+        {
+            if (!orderedLocations.TryGetValue(location.Isle, out var value))
+                orderedLocations.Add(location.Isle, new List<Location> { location });
+            else
+                value.Add(location);
+        }
+
+        return orderedLocations;
+    }
 
     public async Task<Pick> CreatePick(CreatePickRequest request) //TODO Maybe don t need this method
     {

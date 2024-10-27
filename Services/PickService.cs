@@ -31,4 +31,9 @@ public class PickService : IPickService
     {
         throw new NotImplementedException();
     }
+
+    public Task<Pick> CreatePick()
+    {
+        throw new NotImplementedException();
+    }
 }
