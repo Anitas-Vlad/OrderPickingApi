@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OrderPickingSystem.Context;
 using OrderPickingSystem.Models;
 using OrderPickingSystem.Services.Interfaces;
@@ -29,54 +30,38 @@ public class OrderService : IOrderService
     }
 
     public async Task<Location> QueryNextLocation(Order order)
-    // Break into smaller methods
     {
         var pickingLocationsQueue = await _locationService.QueryPickingLocationsQueue();
-
         var itemFound = false;
 
-        do
+        var nextLocation = pickingLocationsQueue.Dequeue();
+
+        while (itemFound == false)
         {
-            var nextLocation = pickingLocationsQueue.Dequeue();
             if (nextLocation == null)
             {
-                if (order.ReplenishItems.Count != 0)
-                {
+                if (order.ReplenishItems.Count > 0)
                     throw new ArgumentException(
-                        "There are still items to be picked. Please leave the Palette in the Replenish Area.");
-                }
+                        "There are still items to be picked. Leave the Palette in the Replenish Area.");
 
-                FinishOrder(order); //TODO Not implemented yet
+                throw new ArgumentException("The order is completed. You must now print the label.");
             }
 
             var nextLocationItem = nextLocation.Item;
-
-            var wantedItem = order.Items.FirstOrDefault(item => item.Id == nextLocationItem.Id);
+            var wantedItem = order.GetItemById(nextLocationItem.LocationId);
 
             if (wantedItem == null)
                 continue;
 
             if (!nextLocationItem.CheckIfQuantityIsEnoughToPick(wantedItem.Quantity))
             {
-                order.ReplenishItems.Enqueue(wantedItem);
+                order.EnqueueReplenishItem(wantedItem);
                 _context.Orders.Update(order);
             }
             else
-            {
                 itemFound = true;
-            }
-        } while (itemFound == false);
-        
-        
-    }
-
-    private void FinishOrder(Order order)
-    {
-        if (order.ReplenishItems.Count > 0)
-        {
-            // Idk yet. :)))
         }
 
-        throw new NotImplementedException();
+        return nextLocation;
     }
 }

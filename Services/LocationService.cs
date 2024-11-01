@@ -28,11 +28,11 @@ public class LocationService : ILocationService
     
     public async Task<Queue<Location>> QueryPickingLocationsQueue()
     {
-        // var dictionary = await QueryPickingLocations();
-        // var locationsQueue = OrderPickingLocationsQueue(dictionary);
-        //
-        // return locationsQueue;
-        return OrderPickingLocationsQueue(await QueryPickingLocations());
+        var dictionary = await QueryPickingLocations();
+        var locationsQueue = OrderPickingLocationsQueue(dictionary);
+        
+        return locationsQueue;
+        // return OrderPickingLocationsQueue(await QueryPickingLocations());
     }
     
     public async Task<Queue<Location>> QueryReplenishLocationsQueue()

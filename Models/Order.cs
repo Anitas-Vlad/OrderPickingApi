@@ -16,4 +16,10 @@ public class Order
     [Required(ErrorMessage = "Mobile number is required.")]
     [Phone(ErrorMessage = "Please enter a valid number.")]
     public string ContactNumber { get; set; }
+
+    public void EnqueueReplenishItem(Item item)
+        => ReplenishItems.Enqueue(item);
+
+    public Item? GetItemById(int itemId) 
+        => Items.FirstOrDefault(item => item.Id == itemId);
 }
