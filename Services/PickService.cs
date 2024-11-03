@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderPickingSystem.Context;
 using OrderPickingSystem.Models;
+using OrderPickingSystem.Models.Requests;
 using OrderPickingSystem.Services.Interfaces;
 
 namespace OrderPickingSystem.Services;
@@ -34,26 +35,8 @@ public class PickService : IPickService
         throw new NotImplementedException();
     }
 
-    public Task PickFromLocation(CreatePickRequest request)
+    public Task PickFromLocation(PickRequest request)
     {
         throw new NotImplementedException();
     }
-
-    public async Task<Pick> CreatePick(CreatePickRequest request)
-        // Maybe don t need this method
-    {
-        var pick = new Pick
-        {
-            LocationId = request.LocationId,
-            ItemId = request.LocationId,
-            UserId = request.UserId,
-            ContainerId = request.ContainerId
-        };
-        //TODO much more logic to do here
-        
-        await _context.Picks.AddAsync(pick);
-        return pick;
-    }
-
-    
 }

@@ -68,6 +68,15 @@ public class UserService : IUserService
         return user;
     }
 
+    public async Task<Order> QueryOngoingOrder()
+    {
+        var optionalOrder = (await QueryPersonalAccount()).CurrentOrder;
+        if (optionalOrder == null)
+            throw new ArgumentException("There is no ongoing order, please select one.");
+
+        return optionalOrder;
+    }
+
     public async Task<List<User>> QueryAllUsers() =>
         await _context.Users
             .ToListAsync();

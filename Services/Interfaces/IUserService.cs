@@ -12,4 +12,5 @@ public interface IUserService
     Task<List<User>> QueryAllUsers();
     Task<User?> QueryUserByEmail(string userEmail);
     Task<User> CreateUser(RegisterRequest request);
+    Task<Order> QueryOngoingOrder();
 }

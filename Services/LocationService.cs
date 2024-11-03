@@ -8,14 +8,16 @@ namespace OrderPickingSystem.Services;
 public class LocationService : ILocationService
 {
     private readonly OrderPickingContext _context;
+    private readonly IOrderService _orderService;
     private readonly IPickService _pickService;
     private readonly IItemService _itemService;
 
-    public LocationService(OrderPickingContext context, IPickService pickService, IItemService itemService)
+    public LocationService(OrderPickingContext context, IPickService pickService, IItemService itemService, IOrderService orderService)
     {
         _context = context;
         _pickService = pickService;
         _itemService = itemService;
+        _orderService = orderService;
     }
 
     public async Task<Location> QueryLocationById(int locationId)
@@ -26,8 +28,9 @@ public class LocationService : ILocationService
         return location;
     }
     
-    public async Task<Location> QueryNextLocation(Order order)
+    public async Task<Location> QueryNextLocation(int orderId)
     {
+        var order = await _orderService.QueryOrderById(orderId);
         var pickingLocationsQueue = await QueryPickingLocationsQueue();
         var itemFound = false;
 

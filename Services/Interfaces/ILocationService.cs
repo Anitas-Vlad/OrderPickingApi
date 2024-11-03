@@ -7,5 +7,5 @@ public interface ILocationService
     Task<Location> QueryLocationById(int locationId);
     Task<Queue<Location>> QueryPickingLocationsQueue();
     Task<Queue<Location>> QueryReplenishLocationsQueue();
-    Task<Location> QueryNextLocation(Order order);
+    Task<Location> QueryNextLocation(int orderId);
 }

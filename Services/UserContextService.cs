@@ -22,11 +22,4 @@ public class UserContextService : IUserContextService
 
         return userId;
     }
-
-    
-    //TODO Add current OrderId to Claims
-    // public int GetOrderId()
-    // {
-    //     
-    // }
 }
