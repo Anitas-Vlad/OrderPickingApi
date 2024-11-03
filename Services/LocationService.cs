@@ -26,6 +26,42 @@ public class LocationService : ILocationService
         return location;
     }
     
+    public async Task<Location> QueryNextLocation(Order order)
+    {
+        var pickingLocationsQueue = await QueryPickingLocationsQueue();
+        var itemFound = false;
+
+        var nextLocation = pickingLocationsQueue.Dequeue();
+
+        while (itemFound == false)
+        {
+            if (nextLocation == null)
+            {
+                if (order.ReplenishItems.Count > 0)
+                    throw new ArgumentException(
+                        "There are still items to be picked. Leave the Palette in the Replenish Area.");
+
+                throw new ArgumentException("The order is completed. You must now print the label.");
+            }
+
+            var nextLocationItem = nextLocation.Item;
+            var wantedItem = order.GetItemById(nextLocationItem.LocationId);
+
+            if (wantedItem == null)
+                continue;
+
+            if (!nextLocationItem.CheckIfQuantityIsEnoughToPick(wantedItem.Quantity))
+            {
+                order.EnqueueReplenishItem(wantedItem);
+                _context.Orders.Update(order);
+            }
+            else
+                itemFound = true;
+        }
+
+        return nextLocation;
+    }
+    
     public async Task<Queue<Location>> QueryPickingLocationsQueue()
     {
         var dictionary = await QueryPickingLocations();
@@ -69,7 +105,7 @@ public class LocationService : ILocationService
         var locations = await _context.Locations.Where(location => location.Floor == 1)
             .OrderBy(location => location.Isle).ToListAsync();
 
-        var sortedLocations = createIsleSortedLocationsDictionary(locations);
+        var sortedLocations = CreateIsleSortedLocationsDictionary(locations);
 
         return sortedLocations;
     }
@@ -80,13 +116,13 @@ public class LocationService : ILocationService
         var locations = await _context.Locations.Where(location => location.Floor != 1)
             .OrderBy(location => location.Isle).ToListAsync();
 
-        var sortedLocations = createIsleSortedLocationsDictionary(locations);
+        var sortedLocations = CreateIsleSortedLocationsDictionary(locations);
 
         return sortedLocations;
     }
 
 
-    private SortedDictionary<int, List<Location>> createIsleSortedLocationsDictionary(List<Location> locations)
+    private SortedDictionary<int, List<Location>> CreateIsleSortedLocationsDictionary(List<Location> locations)
     {
         var orderedLocations = new SortedDictionary<int, List<Location>>();
 

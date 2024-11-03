@@ -29,39 +29,8 @@ public class OrderService : IOrderService
         return order;
     }
 
-    public async Task<Location> QueryNextLocation(Order order)
+    public Task<List<Pick>> QueryPicksByOrderId(int OrderId)
     {
-        var pickingLocationsQueue = await _locationService.QueryPickingLocationsQueue();
-        var itemFound = false;
-
-        var nextLocation = pickingLocationsQueue.Dequeue();
-
-        while (itemFound == false)
-        {
-            if (nextLocation == null)
-            {
-                if (order.ReplenishItems.Count > 0)
-                    throw new ArgumentException(
-                        "There are still items to be picked. Leave the Palette in the Replenish Area.");
-
-                throw new ArgumentException("The order is completed. You must now print the label.");
-            }
-
-            var nextLocationItem = nextLocation.Item;
-            var wantedItem = order.GetItemById(nextLocationItem.LocationId);
-
-            if (wantedItem == null)
-                continue;
-
-            if (!nextLocationItem.CheckIfQuantityIsEnoughToPick(wantedItem.Quantity))
-            {
-                order.EnqueueReplenishItem(wantedItem);
-                _context.Orders.Update(order);
-            }
-            else
-                itemFound = true;
-        }
-
-        return nextLocation;
+        throw new NotImplementedException();
     }
 }

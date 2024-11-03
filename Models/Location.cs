@@ -15,5 +15,4 @@ public class Location
     public int GetItemQuantity() => Item.Quantity;
     public bool HasEnoughItemQuantity(int requestedQuantity) 
         => GetItemQuantity() >= requestedQuantity;
-    
 }
