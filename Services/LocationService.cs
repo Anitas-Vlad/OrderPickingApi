@@ -8,16 +8,12 @@ namespace OrderPickingSystem.Services;
 public class LocationService : ILocationService
 {
     private readonly OrderPickingContext _context;
-    private readonly IOrderService _orderService;
-    private readonly IPickService _pickService;
-    private readonly IItemService _itemService;
+    private readonly IUserService _userService;
 
-    public LocationService(OrderPickingContext context, IPickService pickService, IItemService itemService, IOrderService orderService)
+    public LocationService(OrderPickingContext context, IUserService userService)
     {
         _context = context;
-        _pickService = pickService;
-        _itemService = itemService;
-        _orderService = orderService;
+        _userService = userService;
     }
 
     public async Task<Location> QueryLocationById(int locationId)
@@ -27,11 +23,12 @@ public class LocationService : ILocationService
             throw new ArgumentException("Location not found.");
         return location;
     }
-    
-    public async Task<Location> QueryNextLocation(int orderId)
+
+    public async Task<Location> QueryNextLocation()
     {
-        var order = await _orderService.QueryOrderById(orderId);
-        var pickingLocationsQueue = await QueryPickingLocationsQueue();
+        var order = await _userService.QueryOngoingOrder();
+
+        var pickingLocationsQueue = await GetLocationsQueue();
         var itemFound = false;
 
         var nextLocation = pickingLocationsQueue.Dequeue();
@@ -40,7 +37,7 @@ public class LocationService : ILocationService
         {
             if (nextLocation == null)
             {
-                if (order.ReplenishItems.Count > 0)
+                if (order.ReplenishedRequestedItems.Count > 0)
                     throw new ArgumentException(
                         "There are still items to be picked. Leave the Palette in the Replenish Area.");
 
@@ -48,14 +45,14 @@ public class LocationService : ILocationService
             }
 
             var nextLocationItem = nextLocation.Item;
-            var wantedItem = order.GetItemById(nextLocationItem.LocationId);
+            var pickRequest = order.GetItemById(nextLocationItem.LocationId);
 
-            if (wantedItem == null)
+            if (pickRequest == null)
                 continue;
 
-            if (!nextLocationItem.CheckIfQuantityIsEnoughToPick(wantedItem.Quantity))
+            if (!nextLocationItem.CheckIfQuantityIsEnoughToPick(pickRequest.Quantity))
             {
-                order.EnqueueReplenishItem(wantedItem);
+                order.EnqueueReplenishItem(pickRequest);
                 _context.Orders.Update(order);
             }
             else
@@ -64,25 +61,46 @@ public class LocationService : ILocationService
 
         return nextLocation;
     }
-    
-    public async Task<Queue<Location>> QueryPickingLocationsQueue()
+
+    private async Task<Queue<Location>> GetLocationsQueue()
     {
         var dictionary = await QueryPickingLocations();
-        var locationsQueue = OrderPickingLocationsQueue(dictionary);
-        
+        var locationsQueue = OrderLocationsQueue(dictionary);
+
         return locationsQueue;
         // return OrderPickingLocationsQueue(await QueryPickingLocations());
     }
-    
-    public async Task<Queue<Location>> QueryReplenishLocationsQueue()
+
+    private async Task<SortedDictionary<int, List<Location>>> QueryPickingLocations()
+    {
+        var locations = await _context.Locations.Where(location => location.Floor == 1)
+            .OrderBy(location => location.Isle).ToListAsync();
+
+        var sortedLocations = CreateIsleSortedLocationsDictionary(locations);
+
+        return sortedLocations;
+    }
+
+    private async Task<Queue<Location>> GetReplenishLocationsQueue()
     {
         var dictionary = await QueryReplenishLocations();
-        var locationsQueue = OrderPickingLocationsQueue(dictionary);
+        var locationsQueue = OrderLocationsQueue(dictionary);
 
         return locationsQueue;
     }
 
-    private Queue<Location> OrderPickingLocationsQueue(SortedDictionary<int, List<Location>> locationsDictionary)
+    // These are all the locations from where the reach truckers have to take Items to replenish the Picking locations on the first floor.
+    private async Task<SortedDictionary<int, List<Location>>> QueryReplenishLocations()
+    {
+        var locations = await _context.Locations.Where(location => location.Floor != 1)
+            .OrderBy(location => location.Isle).ToListAsync();
+
+        var sortedLocations = CreateIsleSortedLocationsDictionary(locations);
+
+        return sortedLocations;
+    }
+
+    private Queue<Location> OrderLocationsQueue(SortedDictionary<int, List<Location>> locationsDictionary)
     {
         var locationsQueue = new Queue<Location>();
         foreach (var (key, isleLocations) in locationsDictionary)
@@ -100,30 +118,6 @@ public class LocationService : ILocationService
 
         return locationsQueue;
     }
-
-    // These are all the 1st floor picking locations.
-    // Maybe there should be another table in the DB for the PickingLocations so that this request is not made every time an order is starte.
-    private async Task<SortedDictionary<int, List<Location>>> QueryPickingLocations()
-    {
-        var locations = await _context.Locations.Where(location => location.Floor == 1)
-            .OrderBy(location => location.Isle).ToListAsync();
-
-        var sortedLocations = CreateIsleSortedLocationsDictionary(locations);
-
-        return sortedLocations;
-    }
-    
-    // These are all the locations from where the reach truckers have to take Items to replenish the Picking locations on the first floor.
-    private async Task<SortedDictionary<int, List<Location>>> QueryReplenishLocations()
-    {
-        var locations = await _context.Locations.Where(location => location.Floor != 1)
-            .OrderBy(location => location.Isle).ToListAsync();
-
-        var sortedLocations = CreateIsleSortedLocationsDictionary(locations);
-
-        return sortedLocations;
-    }
-
 
     private SortedDictionary<int, List<Location>> CreateIsleSortedLocationsDictionary(List<Location> locations)
     {

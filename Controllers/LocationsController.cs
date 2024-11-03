@@ -16,7 +16,12 @@ public class LocationsController : ControllerBase
     }
 
     [HttpGet]
-    [Route("/NextLocation/{orderId}")]
-    public async Task<ActionResult<Location>> GetNextLocation(int orderId) //TODO order comes from loggedIn User.CurrentOrder
-        => await _locationService.QueryNextLocation(orderId);
+    [Route("/NextLocation")]
+    public async Task<ActionResult<Location>> GetNextLocation() //TODO order comes from loggedIn User.CurrentOrder
+        => await _locationService.QueryNextLocation();
+
+    [HttpGet]
+    [Route("{locationId}")]
+    public async Task<Location> GetLocationById(int locationId)
+        => await _locationService.QueryLocationById(locationId);
 }
