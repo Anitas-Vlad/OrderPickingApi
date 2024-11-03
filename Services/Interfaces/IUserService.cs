@@ -10,7 +10,7 @@ public interface IUserService
     Task<UserResponse> QueryUserProfile(string username);
     Task<User> QueryPersonalAccount();
     Task<List<User>> QueryAllUsers();
-    Task<User?> QueryUserByEmail(string userEmail);
+    Task<User> QueryUserByUsername(string username);
     Task<User> CreateUser(RegisterRequest request);
     Task<Order> QueryOngoingOrder();
 }

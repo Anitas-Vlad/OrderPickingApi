@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OrderPickingSystem.Context;
 using OrderPickingSystem.Models;
+using OrderPickingSystem.Models.Enums;
 using OrderPickingSystem.Models.Requests;
 using OrderPickingSystem.Models.Responses;
 using OrderPickingSystem.Services.Interfaces;
@@ -10,7 +11,7 @@ namespace OrderPickingSystem.Services;
 
 public class UserService : IUserService
 {
-    private readonly Context.OrderPickingContext _context;
+    private readonly OrderPickingContext _context;
     private static Regex _mailPattern;
     private static Regex _passwordPattern;
     private readonly IUserContextService _userContextService;
@@ -25,6 +26,9 @@ public class UserService : IUserService
         _userMapper = userMapper;
     }
 
+    public async Task<bool> CheckIfUserHasAdminRights()
+        => (await QueryPersonalAccount()).UserRights == UserRights.Admin;
+
     public async Task<User> QueryUserById(int userId)
     {
         var user = await _context.Users
@@ -36,7 +40,7 @@ public class UserService : IUserService
         return user;
     }
 
-    private async Task<User> QueryUserByUsername(string username)
+    public async Task<User> QueryUserByUsername(string username)
     {
         var user = await _context.Users
             .Where(user => user.Username == username)
@@ -63,7 +67,7 @@ public class UserService : IUserService
             .Where(user => user.Id == userId)
             .FirstOrDefaultAsync();
 
-        if (user == null) throw new ArgumentException("User not found.");
+        if (user == null) throw new ArgumentException("You are not logged in.");
 
         return user;
     }
@@ -77,21 +81,12 @@ public class UserService : IUserService
         return optionalOrder;
     }
 
-    public async Task<List<User>> QueryAllUsers() =>
+    public async Task<List<User>> QueryAllUsers() => //TODO Admin
         await _context.Users
             .ToListAsync();
 
-    public async Task<User?> QueryUserByEmail(string userEmail)
-        => await _context.Users
-            .Where(user => user.Email == userEmail)
-            .FirstOrDefaultAsync();
-
-    public async Task<User> QueryOwner()
-        => await _context.Users.FirstAsync(user => user.Email == "owner@gmail.com");
-
-    public async Task<User> CreateUser(RegisterRequest request)
+    public async Task<User> CreateUser(RegisterRequest request) //TODO Admin
     {
-        await IsEmailValid(request.Email);
         await IsUsernameValid(request.Username);
         IsPasswordValid(request.Password);
 
@@ -100,8 +95,7 @@ public class UserService : IUserService
         var user = new User
         {
             Username = request.Username,
-            PasswordHash = passwordHash,
-            Email = request.Email
+            PasswordHash = passwordHash
         };
 
         _context.Users.Add(user);
@@ -110,22 +104,13 @@ public class UserService : IUserService
         return user;
     }
 
-    private async Task IsEmailValid(string userEmail)
-    {
-        if (!_mailPattern.IsMatch(userEmail))
-            throw new ArgumentException("Please enter a valid email.");
-
-        if (await _context.Users.AnyAsync(user => user.Email == userEmail))
-            throw new ArgumentException($"The email: \"{userEmail}\" in use.");
-    }
-
-    private async Task IsUsernameValid(string username)
+    private async Task IsUsernameValid(string username) //TODO Admin
     {
         if (await _context.Users.AnyAsync(user => user.Username == username))
             throw new ArgumentException($"the username \"{username}\" is taken.");
     }
-
-    private static void IsPasswordValid(string userPassword)
+    
+    private static void IsPasswordValid(string userPassword) //TODO Admin
     {
         if (!_passwordPattern.IsMatch(userPassword))
             throw new ArgumentException(
