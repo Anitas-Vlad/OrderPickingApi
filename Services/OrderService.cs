@@ -9,12 +9,10 @@ namespace OrderPickingSystem.Services;
 public class OrderService : IOrderService
 {
     private readonly OrderPickingContext _context;
-    private readonly ILocationService _locationService;
 
-    public OrderService(OrderPickingContext context, ILocationService locationService)
+    public OrderService(OrderPickingContext context)
     {
         _context = context;
-        _locationService = locationService;
     }
 
     //TODO AdminApi
@@ -27,10 +25,5 @@ public class OrderService : IOrderService
         if (order == null)
             throw new ArgumentException("Order not found.");
         return order;
-    }
-
-    public Task<List<Pick>> QueryPicksByOrderId(int OrderId)
-    {
-        throw new NotImplementedException();
     }
 }

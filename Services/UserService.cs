@@ -52,13 +52,6 @@ public class UserService : IUserService
         return user;
     }
 
-    public async Task<UserResponse> QueryUserProfile(string username)
-    {
-        var user = await QueryUserByUsername(username);
-        var userResponse = _userMapper.Map(user);
-        return userResponse;
-    }
-
     public async Task<User> QueryPersonalAccount()
     {
         var userId = _userContextService.GetUserId();

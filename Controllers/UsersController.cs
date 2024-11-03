@@ -21,11 +21,6 @@ public class UsersController : ControllerBase
         => await _userService.QueryPersonalAccount();
 
     [HttpGet]
-    [Route("/{username}")]
-    public async Task<ActionResult<UserResponse>> SearchUserProfile(string username)
-        => await _userService.QueryUserProfile(username);
-    
-    [HttpGet]
     public async Task<ActionResult<List<User>>> GetAllUsers() 
         => await _userService.QueryAllUsers();
 }
