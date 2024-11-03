@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderPickingSystem.Models;
+using OrderPickingSystem.Models.Enums;
 
 namespace OrderPickingSystem.Context;
 
@@ -20,6 +21,7 @@ public class OrderPickingContext : DbContext
     public DbSet<Item> Items { get; set; } = default!;
     public DbSet<Location> Locations { get; set; } = default!;
     public DbSet<Pick> Picks { get; set; } = default!;
+    public DbSet<Palette> Palettes { get; set; } = default!;
 
 
     private static class ModelBuilderExtensions
@@ -30,29 +32,30 @@ public class OrderPickingContext : DbContext
                 new User
                 {
                     Id = 1000,
-                    Username = "User 1",
-                    Email = "user1@gmail.com",
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("User11..")
+                    Username = "Vlad",
+                    UserRights = UserRights.Worker,
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Avlad1..")
                 },
                 new User
                 {
                     Id = 1001,
-                    Username = "User 2",
-                    Email = "user2@gmail.com",
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("User22..")
+                    Username = "Malaka",
+                    UserRights = UserRights.Worker,
+                    
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Malaka1..")
                 },
                 new User
                 {
                     Id = 1002,
-                    Username = "User 3",
-                    Email = "user3@gmail.com",
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("User33..")
+                    Username = "Tomas",
+                    UserRights = UserRights.Worker,
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Tomas1..")
                 },
                 new User
                 {
                     Id = 1004,
-                    Username = "Owner",
-                    Email = "owner@gmail.com",
+                    Username = "Admin",
+                    UserRights = UserRights.Admin,
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("Owner123.")
                 }
             );
