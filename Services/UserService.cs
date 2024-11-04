@@ -27,7 +27,7 @@ public class UserService : IUserService
     }
 
     public async Task<bool> CheckIfUserHasAdminRights()
-        => (await QueryPersonalAccount()).UserRights == UserRights.Admin;
+        => (await QueryPersonalAccount()).Role == UserRole.Admin;
 
     public async Task<User> QueryUserById(int userId)
     {

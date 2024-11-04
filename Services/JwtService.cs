@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using OrderPickingSystem.Models;
+using OrderPickingSystem.Models.Enums;
 using OrderPickingSystem.Services.Interfaces;
 
 namespace OrderPickingSystem.Services;
@@ -21,6 +22,7 @@ public class JwtService : IJwtService
         var claims = new List<Claim>
         {
             new(ClaimTypes.Name, user.Username),
+            new(ClaimTypes.Role, Enum.GetName(typeof(UserRole), user.Role)),
             new(ClaimTypes.NameIdentifier, user.Id.ToString())
         };
 

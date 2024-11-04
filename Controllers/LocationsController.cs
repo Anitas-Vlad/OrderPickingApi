@@ -21,7 +21,7 @@ public class LocationsController : ControllerBase
         => await _locationService.QueryNextLocation();
 
     [HttpGet]
-    [Route("{locationId}")]
+    [Route("/{locationId}")]
     public async Task<Location> GetLocationById(int locationId)
         => await _locationService.QueryLocationById(locationId);
 }

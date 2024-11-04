@@ -89,13 +89,16 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
+    // app.UseDeveloperExceptionPage();
+    // app.UseSwagger();
+    // app.UseSwaggerUI(c =>
+    // {
+    //     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API V1");
+    //     c.RoutePrefix = string.Empty; // Set the root URL to redirect to Swagger UI
+    // });
+    
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API V1");
-        c.RoutePrefix = string.Empty; // Set the root URL to redirect to Swagger UI
-    });
+    app.UseSwaggerUI();
 }
 
 app.UseAuthentication();

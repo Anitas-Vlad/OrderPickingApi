@@ -1,6 +1,7 @@
 ﻿namespace OrderPickingSystem.Models.Enums;
 
-public enum UserRights
+public enum UserRole
 {
-    Admin, Worker
+    Admin,
+    Worker
 }

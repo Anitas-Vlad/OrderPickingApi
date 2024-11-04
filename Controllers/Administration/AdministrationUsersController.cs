@@ -5,7 +5,7 @@ using OrderPickingSystem.Services.Interfaces;
 namespace OrderPickingSystem.Controllers.Administration;
 
 [ApiController]
-[Route("{controller}")]
+[Route("[controller]")]
 public class AdministrationUsersController : ControllerBase
 {
     private readonly IUserService _userService;
@@ -20,6 +20,7 @@ public class AdministrationUsersController : ControllerBase
         => await _userService.QueryAllUsers();
 
     [HttpGet]
+    [Route("/{userId}")]
     public async Task<ActionResult<User>> GetUserById(int userId)
         => await _userService.QueryUserById(userId);
 }

@@ -8,7 +8,7 @@ public class User
     public int Id { get; set; }
     [Required] public string Username { get; set; } // TODO Replace Email with Username in JWT
     [Required] public string PasswordHash { get; set; }
-    [Required] public UserRights UserRights { get; set; } = UserRights.Worker;
+    [Required] public UserRole Role { get; set; } = UserRole.Worker;
     public Order? CurrentOrder { get; set; }
 
     public void LeaveCurrentOrder()
@@ -18,8 +18,8 @@ public class User
         => CurrentOrder = order;
 
     public void AddAdminRights()
-        => UserRights = UserRights.Admin;
+        => Role = UserRole.Admin;
 
     public void RemoveAdminRights()
-        => UserRights = UserRights.Worker;
+        => Role = UserRole.Worker;
 }

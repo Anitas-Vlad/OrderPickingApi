@@ -12,6 +12,11 @@ public class OrderPickingContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<User>()
+            .Property(user => user.Role)
+            .HasConversion<string>(); // Converts the enum to a string in the database
+
+        base.OnModelCreating(modelBuilder);
         ModelBuilderExtensions.Seed(modelBuilder);
     }
 
@@ -33,14 +38,12 @@ public class OrderPickingContext : DbContext
                 {
                     Id = 1000,
                     Username = "Vlad",
-                    UserRights = UserRights.Worker,
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("Avlad1..")
                 },
                 new User
                 {
                     Id = 1001,
                     Username = "Malaka",
-                    UserRights = UserRights.Worker,
                     
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("Malaka1..")
                 },
@@ -48,14 +51,13 @@ public class OrderPickingContext : DbContext
                 {
                     Id = 1002,
                     Username = "Tomas",
-                    UserRights = UserRights.Worker,
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("Tomas1..")
                 },
                 new User
                 {
                     Id = 1004,
                     Username = "Admin",
-                    UserRights = UserRights.Admin,
+                    Role = UserRole.Admin,
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("Owner123.")
                 }
             );
