@@ -11,7 +11,7 @@ public class Order
     [Required] public OrderStatus OrderStatus { get; set; } = OrderStatus.Received; //TODO String.ValueOf() for DB
     [Required] public List<Palette> Palettes { get; set; }
     [Required] public string Destination { get; set; }
-    [Required] public List<Pick> Picks { get; set; } = new();
+    [Required] public List<Pick> Picks { get; set; }
     [Required] public Queue<PickRequest> RequestedItems { get; set; } //TODO Queue<PickRequest>
     [Required] public Queue<PickRequest> ReplenishedRequestedItems { get; set; } //TODO Queue<PickRequest>
 

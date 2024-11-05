@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OrderPickingSystem.Context;
+using OrderPickingSystem.Models.Enums;
 using OrderPickingSystem.Services;
 using OrderPickingSystem.Services.Interfaces;
 using OrderPickingSystem.Services.Mappers;
@@ -34,6 +35,14 @@ builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<IUserMapper, UserMapper>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy("ADMIN", policy => policy.RequireRole(UserRole.Admin.ToString().ToUpperInvariant()));
+        options.AddPolicy("WORKER", policy => policy.RequireRole(UserRole.Worker.ToString().ToUpperInvariant()));
+        options.AddPolicy("ADMINANDWORKER", policy => policy.RequireRole(UserRole.Worker.ToString(), UserRole.Admin.ToString().ToUpperInvariant()));
+    }
+);
 
 builder.Services.AddAuthentication(options =>
 {
@@ -96,16 +105,17 @@ if (app.Environment.IsDevelopment())
     //     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API V1");
     //     c.RoutePrefix = string.Empty; // Set the root URL to redirect to Swagger UI
     // });
-    
+
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseHttpsRedirection();
-app.UseRouting();
 
 app.MapControllers();
 

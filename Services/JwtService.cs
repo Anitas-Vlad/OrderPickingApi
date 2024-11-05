@@ -19,24 +19,27 @@ public class JwtService : IJwtService
 
     public string CreateToken(User user)
     {
+        var userRoleClaim = new Claim(ClaimTypes.Role, Enum.GetName(typeof(UserRole), user.Role)!.ToUpperInvariant());
         var claims = new List<Claim>
         {
             new(ClaimTypes.Name, user.Username),
-            new(ClaimTypes.Role, Enum.GetName(typeof(UserRole), user.Role)),
+            userRoleClaim,
             new(ClaimTypes.NameIdentifier, user.Id.ToString())
         };
+        Console.WriteLine("Token was created with the User.Role: " + userRoleClaim.Value);
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
             _configuration.GetSection("JwtSettings:Token").Value!));
 
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
         var header = new JwtHeader(credentials);
-        
-        var payload = new JwtPayload("ProjectApi", "http://localhost:5084", claims, //TODO Edit the Issuer and Audience according to your project.
+
+        var payload = new JwtPayload("OrderPickingSystem", "http://localhost:5076", //TODO Edit the Issuer and Audience according to your project.
+            claims,
             null, DateTime.Today.AddDays(7));
 
         var token = new JwtSecurityToken(header, payload);
-      
+
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
@@ -45,7 +48,7 @@ public class JwtService : IJwtService
         var tokenHandler = new JwtSecurityTokenHandler();
 
         var key = Encoding.ASCII.GetBytes(_configuration.GetSection("JwtSettings:Token").Value!);
-        
+
         tokenHandler.ValidateToken(jwt, new TokenValidationParameters
         {
             IssuerSigningKey = new SymmetricSecurityKey(key),
@@ -53,14 +56,14 @@ public class JwtService : IJwtService
             ValidateIssuer = false,
             ValidateAudience = false
         }, out var validatedToken);
-        
+
         return (JwtSecurityToken)validatedToken;
     }
-    
+
     public int GetUserIdFromClaims(ClaimsPrincipal user)
     {
         var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
-        
+
         if (userIdClaim == null)
             throw new ArgumentException("userIdClaim == null.");
 

@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OrderPickingSystem.Models;
 using OrderPickingSystem.Services.Interfaces;
 
 namespace OrderPickingSystem.Controllers.Administration;
 
 [ApiController]
+[Authorize(Roles = "Admin")]
 [Route("[controller]")]
 public class AdministrationUsersController : ControllerBase
 {
@@ -18,9 +20,4 @@ public class AdministrationUsersController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<User>>> GetUsers()
         => await _userService.QueryAllUsers();
-
-    [HttpGet]
-    [Route("/{userId}")]
-    public async Task<ActionResult<User>> GetUserById(int userId)
-        => await _userService.QueryUserById(userId);
 }

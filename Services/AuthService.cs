@@ -16,7 +16,7 @@ public class AuthService : IAuthService
 
     public async Task<string> Login(LoginRequest request)
     {
-        var userFromDb = await _userService.QueryUserByUsername(request.Email);
+        var userFromDb = await _userService.QueryUserByUsername(request.Username);
         
         if (!BCrypt.Net.BCrypt.Verify(request.Password, userFromDb.PasswordHash)) 
             throw new ArgumentException("Incorrect credentials.");
