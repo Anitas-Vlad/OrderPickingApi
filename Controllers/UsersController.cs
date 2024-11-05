@@ -1,12 +1,11 @@
-﻿using System.Threading.RateLimiting;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrderPickingSystem.Models;
 using OrderPickingSystem.Services.Interfaces;
 
 namespace OrderPickingSystem.Controllers;
 
-[Authorize(Roles = "Admin")]
+// [Authorize(Roles = "Admin")]
 [ApiController]
 [Route("[controller]")]
 public class UsersController : ControllerBase
@@ -21,7 +20,7 @@ public class UsersController : ControllerBase
         => await _userService.QueryPersonalAccount();
 
     [HttpGet]
-    [AllowAnonymous]
+    // [AllowAnonymous]
     public async Task<ActionResult<List<User>>> GetAllUsers()
         => await _userService.QueryAllUsers();
 }

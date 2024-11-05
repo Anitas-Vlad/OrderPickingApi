@@ -15,15 +15,17 @@ public class UserService : IUserService
     private static Regex _mailPattern;
     private static Regex _passwordPattern;
     private readonly IUserContextService _userContextService;
+    private readonly IOrderService _orderService;
     private readonly IUserMapper _userMapper;
 
-    public UserService(OrderPickingContext context, IUserContextService userContextService, IUserMapper userMapper)
+    public UserService(OrderPickingContext context, IOrderService orderService, IUserContextService userContextService, IUserMapper userMapper)
     {
         _context = context;
         _mailPattern = new("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
         _passwordPattern = new("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$");
         _userContextService = userContextService;
         _userMapper = userMapper;
+        _orderService = orderService;
     }
 
     public async Task<bool> CheckIfUserHasAdminRights()
@@ -102,11 +104,30 @@ public class UserService : IUserService
         if (await _context.Users.AnyAsync(user => user.Username == username))
             throw new ArgumentException($"the username \"{username}\" is taken.");
     }
-    
+
     private static void IsPasswordValid(string userPassword) //TODO Admin
     {
         if (!_passwordPattern.IsMatch(userPassword))
             throw new ArgumentException(
                 "Password must contain special characters, numbers, capital letters and be longer than 8 characters.");
+    }
+
+    public async Task<User> TakeOrder(int orderId)
+    {
+        var user = await QueryPersonalAccount();
+        user.ThrowIfHasOngoingOrder();
+
+        var order = await _orderService.QueryOrderById(orderId);
+        order.ThrowIfIsInPicking();
+        
+        user.StartOrder(order);
+        order.CurrentUserId = user.Id;
+        order.OrderStatus = OrderStatus.Picking;
+        
+        _context.Orders.Update(order);
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+
+        return user;
     }
 }

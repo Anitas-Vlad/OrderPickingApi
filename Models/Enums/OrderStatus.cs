@@ -2,5 +2,5 @@
 
 public enum OrderStatus
 {
-    Received, InProcess, Shipped
+    Received, InProcess, Picking, Shipped
 }

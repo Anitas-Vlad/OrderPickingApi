@@ -8,7 +8,7 @@ namespace OrderPickingSystem.Controllers;
 [Route("[controller]")]
 public class JwtController : ControllerBase
 {
-    [Authorize]
+    // [Authorize]
     [HttpGet("testIdFromClaims")]
     public IActionResult TestEndpoint()
     {
@@ -16,7 +16,7 @@ public class JwtController : ControllerBase
         return Ok($"Role in Token: {roleClaim}");
     }
     
-    [Authorize]
+    // [Authorize]
     [HttpGet("testNameFromClaims")]
     public IActionResult TestEndpointName()
     {

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OrderPickingSystem.Context;
 using OrderPickingSystem.Models;
+using OrderPickingSystem.Models.Enums;
 using OrderPickingSystem.Services.Interfaces;
 
 namespace OrderPickingSystem.Services;
@@ -9,10 +10,12 @@ namespace OrderPickingSystem.Services;
 public class OrderService : IOrderService
 {
     private readonly OrderPickingContext _context;
+    private readonly IPaletteService _paletteService;
 
-    public OrderService(OrderPickingContext context)
+    public OrderService(OrderPickingContext context, IPaletteService paletteService)
     {
         _context = context;
+        _paletteService = paletteService;
     }
 
     //TODO AdminApi
@@ -26,4 +29,10 @@ public class OrderService : IOrderService
             throw new ArgumentException("Order not found.");
         return order;
     }
+
+    // public async Task<Order> SetPalette(int PaletteId)
+    // {
+    //     var order = 
+    //     var palette = await _paletteService.CreatePalette()
+    // }
 }

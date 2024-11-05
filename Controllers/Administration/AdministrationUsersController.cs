@@ -6,7 +6,7 @@ using OrderPickingSystem.Services.Interfaces;
 namespace OrderPickingSystem.Controllers.Administration;
 
 [ApiController]
-[Authorize(Roles = "Admin")]
+// [Authorize(Roles = "Admin")]
 [Route("[controller]")]
 public class AdministrationUsersController : ControllerBase
 {

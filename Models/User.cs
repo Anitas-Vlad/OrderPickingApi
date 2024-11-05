@@ -11,6 +11,12 @@ public class User
     [Required] public UserRole Role { get; set; } = UserRole.Worker;
     public Order? CurrentOrder { get; set; }
 
+    public void ThrowIfHasOngoingOrder()
+    {
+        if (CurrentOrder != null)
+            throw new ArgumentException("You currently have an ongoing order.");
+    }
+
     public void LeaveCurrentOrder()
         => CurrentOrder = null;
 
