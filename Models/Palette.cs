@@ -9,7 +9,13 @@ public class Palette
     public List<Container> Containers { get; set; }
     public Container? OngoingContainer { get; set; }
 
-    public void AddContainer(Container container)
+    // public Container? GetOngoingContainer()
+    // {
+    //     if (OngoingContainer == null)
+    //         throw new ArgumentException("There is no container in progress.");
+    //     return OngoingContainer;
+    // }
+    public void SetContainer(Container container)
     {
         if (!Containers.Contains(container))
         {

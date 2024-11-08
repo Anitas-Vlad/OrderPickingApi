@@ -20,6 +20,16 @@ public class Order
     [Phone(ErrorMessage = "Please enter a valid number.")]
     public string ContactNumber { get; set; }
 
+    // public Palette? GetOngoingPalette()
+    // {
+    //     if (OngoingPalette == null)
+    //     {
+    //         throw new ArgumentException("There is no palette in progress.");
+    //     }
+    //
+    //     return OngoingPalette;
+    // }
+
     public void ThrowIfCannotBePicked()
     {
         if (OrderStatus == OrderStatus.Picking)

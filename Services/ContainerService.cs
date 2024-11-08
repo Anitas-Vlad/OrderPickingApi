@@ -17,8 +17,7 @@ public class ContainerService : IContainerService
     {
         _context = context;
         _containerIdPattern = new(@"^cont\d{12}$");
-        
-
+        _userContextService = userContextService;
     }
 
     public async Task<Container> QueryContainerById(string containerId)
@@ -28,19 +27,34 @@ public class ContainerService : IContainerService
             throw new ArgumentException("Container not found.");
         return container;
     }
-    
+
+    public async Task<Container> CreateContainer(string containerId)
+    {
+        var container = new Container()
+        {
+            Id = containerId,
+            Picks = new List<Pick>()
+        };
+
+        _context.Containers.Add(container);
+        await _context.SaveChangesAsync();
+        return container;
+    }
+
     private void IsContainerIdValid(string containerId)
     {
         if (!_containerIdPattern.IsMatch(containerId))
             throw new ArgumentException("Invalid Container Id.");
     }
     
-    public async Task CheckIfContainerExistsInOtherPalette(string containerId, string paletteId)
+    public async Task<Container?> GetOptionalContainerInProgress(string containerId, string paletteId)
     {
         var container = await QueryContainerById(containerId);
 
         if (container != null && container.PaletteId != paletteId)
             throw new ArgumentException("Invalid Container.");
+
+        return container;
     }
 
     // public async Task AddItemToContainer(int containerId, Item item) //TODO Integrate all Item updates. Location/Stock

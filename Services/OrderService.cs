@@ -35,19 +35,22 @@ public class OrderService : IOrderService
     {
         var order = await _userContextService.QueryOngoingOrder();
         var optionalPalette = await _paletteService.GetOptionalPaletteInProgress(paletteId, order.Id);
-        
+
         if (optionalPalette == null)
         {
             var palette = await _paletteService.CreatePalette(paletteId);
 
             palette.OrderId = order.Id;
             order.SetOngoingPalette(palette);
-            
+
             _context.Palettes.Update(palette);
         }
         else
         {
+            optionalPalette.OrderId = order.Id;
             order.SetOngoingPalette(optionalPalette);
+            
+            _context.Palettes.Update(optionalPalette);
         }
 
         _context.Orders.Update(order);

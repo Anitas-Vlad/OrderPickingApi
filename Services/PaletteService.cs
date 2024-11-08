@@ -13,7 +13,8 @@ public class PaletteService : IPaletteService
     private readonly IContainerService _containerService;
     private static Regex _paletteIdPattern;
 
-    public PaletteService(OrderPickingContext context, IUserContextService userContextService, IContainerService containerService)
+    public PaletteService(OrderPickingContext context, IUserContextService userContextService,
+        IContainerService containerService)
     {
         _context = context;
         _paletteIdPattern = new(@"^pal\d{13}$");
@@ -24,11 +25,11 @@ public class PaletteService : IPaletteService
     public async Task<Palette?> QueryPaletteById(string paletteId)
         => await _context.Palettes.FirstOrDefaultAsync(palette => palette.Id == paletteId);
 
-    public async Task<Palette> CreatePalette(string PaletteId)
+    public async Task<Palette> CreatePalette(string paletteId)
     {
         var palette = new Palette
         {
-            Id = PaletteId,
+            Id = paletteId,
             Containers = new List<Container>()
         };
 
@@ -49,26 +50,38 @@ public class PaletteService : IPaletteService
 
         if (palette != null && palette.OrderId != orderId)
             throw new ArgumentException("Invalid Palette.");
-        
+
         return palette;
     }
-    
-    // public async Task<Palette> SetContainer(string paletteId)
-    // {
-    //     var order = await _userContextService.QueryOngoingOrder();
-    //     var optionalPalette = 
-    //         
-    //         
-    //     // var palette = await CreatePalette(paletteId); //TODO QueryOngoingPalette
-    //     // await _paletteService.CheckIfPaletteExistsInOtherOrder(paletteId, order.Id);
-    //     //
-    //     // palette.OrderId = order.Id;
-    //     // order.Palettes.Add(palette);
-    //     //
-    //     // _context.Orders.Update(order);
-    //     // _context.Palettes.Update(palette);
-    //     // await _context.SaveChangesAsync();
-    //     //
-    //     // return order;
-    // }
+
+    public async Task<Container> SetContainer(string containerId)
+    {
+        var order = await _userContextService.QueryOngoingOrder();
+        var optionalOngoingPalette = order.OngoingPalette;
+        if (optionalOngoingPalette == null)
+            throw new ArgumentException("You must first select a Palette.");
+
+        var optionalContainer =
+            await _containerService.GetOptionalContainerInProgress(containerId, optionalOngoingPalette.Id);
+
+        if (optionalContainer == null)
+        {
+            var container = await _containerService.CreateContainer(containerId);
+
+            container.PaletteId = optionalOngoingPalette.Id;
+            optionalOngoingPalette.SetContainer(container);
+
+            _context.Containers.Update(container);
+            await _context.SaveChangesAsync();
+
+            return container;
+        }
+
+        optionalContainer.PaletteId = optionalOngoingPalette.Id;
+        optionalOngoingPalette.SetContainer(optionalContainer);
+
+        _context.Containers.Update(optionalContainer);
+        await _context.SaveChangesAsync();
+        return optionalContainer;
+    }
 }
