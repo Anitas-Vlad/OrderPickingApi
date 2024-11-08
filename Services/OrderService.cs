@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using OrderPickingSystem.Context;
 using OrderPickingSystem.Models;
-using OrderPickingSystem.Models.Enums;
 using OrderPickingSystem.Services.Interfaces;
 
 namespace OrderPickingSystem.Services;
@@ -11,11 +9,14 @@ public class OrderService : IOrderService
 {
     private readonly OrderPickingContext _context;
     private readonly IPaletteService _paletteService;
+    private readonly IUserContextService _userContextService;
 
-    public OrderService(OrderPickingContext context, IPaletteService paletteService)
+    public OrderService(OrderPickingContext context, IPaletteService paletteService,
+        IUserContextService userContextService)
     {
         _context = context;
         _paletteService = paletteService;
+        _userContextService = userContextService;
     }
 
     //TODO AdminApi
@@ -30,9 +31,19 @@ public class OrderService : IOrderService
         return order;
     }
 
-    // public async Task<Order> SetPalette(int PaletteId)
-    // {
-    //     var order = 
-    //     var palette = await _paletteService.CreatePalette()
-    // }
+    public async Task<Order> SetPalette(string paletteId)
+    {
+        var order = await _userContextService.QueryOngoingOrder();
+        var palette = await _paletteService.CreatePalette(paletteId);
+        //TODO Check if the palette already exists for another Order
+
+        palette.OrderId = order.Id;
+        order.Palettes.Add(palette);
+
+        _context.Orders.Update(order);
+        _context.Palettes.Update(palette);
+        await _context.SaveChangesAsync();
+
+        return order;
+    }
 }

@@ -4,5 +4,5 @@ namespace OrderPickingSystem.Services.Interfaces;
 
 public interface IPaletteService
 {
-    Task<Palette> CreatePalette(int orderId);
+    Task<Palette> CreatePalette(string paletteId);
 }

@@ -9,11 +9,13 @@ public class LocationService : ILocationService
 {
     private readonly OrderPickingContext _context;
     private readonly IUserService _userService;
+    private readonly IUserContextService _userContextService;
 
-    public LocationService(OrderPickingContext context, IUserService userService)
+    public LocationService(OrderPickingContext context, IUserService userService, IUserContextService userContextService)
     {
         _context = context;
         _userService = userService;
+        _userContextService = userContextService;
     }
 
     public async Task<Location> QueryLocationById(int locationId)
@@ -26,7 +28,7 @@ public class LocationService : ILocationService
 
     public async Task<Location> QueryNextLocation()
     {
-        var order = await _userService.QueryOngoingOrder();
+        var order = await _userContextService.QueryOngoingOrder();
 
         var pickingLocationsQueue = await GetLocationsQueue();
         var itemFound = false;

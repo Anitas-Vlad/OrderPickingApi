@@ -1,5 +1,8 @@
 using System.Data;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
+using OrderPickingSystem.Context;
+using OrderPickingSystem.Models;
 using OrderPickingSystem.Services.Interfaces;
 
 namespace OrderPickingSystem.Services;
@@ -7,10 +10,13 @@ namespace OrderPickingSystem.Services;
 public class UserContextService : IUserContextService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly OrderPickingContext _context;
 
-    public UserContextService(IHttpContextAccessor httpContextAccessor)
+
+    public UserContextService(IHttpContextAccessor httpContextAccessor, OrderPickingContext context)
     {
         _httpContextAccessor = httpContextAccessor;
+        _context = context;
     }
 
     public int GetUserId()
@@ -21,5 +27,27 @@ public class UserContextService : IUserContextService
             throw new InvalidOperationException("Invalid or missing user ID claim.");
 
         return userId;
+    }
+    
+    public async Task<User> QueryPersonalAccount()
+    {
+        var userId = GetUserId();
+
+        var user = await _context.Users
+            .Where(user => user.Id == userId)
+            .FirstOrDefaultAsync();
+
+        if (user == null) throw new ArgumentException("You are not logged in.");
+
+        return user;
+    }
+    
+    public async Task<Order> QueryOngoingOrder()
+    {
+        var optionalOrder = (await QueryPersonalAccount()).CurrentOrder;
+        if (optionalOrder == null)
+            throw new ArgumentException("There is no ongoing order, please select one.");
+
+        return optionalOrder;
     }
 }

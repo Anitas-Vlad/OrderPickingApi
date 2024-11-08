@@ -22,10 +22,12 @@ public class Order
     public void SetCurrentUserId(int userId)
         => CurrentUserId = userId;
 
-    public void ThrowIfIsInPicking()
+    public void ThrowIfCannotBePicked()
     {
         if (OrderStatus == OrderStatus.Picking)
             throw new ArgumentException("This order is taken by another worker.");
+        if (!RequestedItems.Any() || !ReplenishedRequestedItems.Any())
+            throw new ArgumentException("There are no more items to be picked.");
     }
 
     public void EnqueueReplenishItem(PickRequest request)

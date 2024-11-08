@@ -29,7 +29,7 @@ public class UserService : IUserService
     }
 
     public async Task<bool> CheckIfUserHasAdminRights()
-        => (await QueryPersonalAccount()).Role == UserRole.Admin;
+        => (await _userContextService.QueryPersonalAccount()).Role == UserRole.Admin;
 
     public async Task<User> QueryUserById(int userId)
     {
@@ -52,28 +52,6 @@ public class UserService : IUserService
             throw new ArgumentException("User not found.");
 
         return user;
-    }
-
-    public async Task<User> QueryPersonalAccount()
-    {
-        var userId = _userContextService.GetUserId();
-
-        var user = await _context.Users
-            .Where(user => user.Id == userId)
-            .FirstOrDefaultAsync();
-
-        if (user == null) throw new ArgumentException("You are not logged in.");
-
-        return user;
-    }
-
-    public async Task<Order> QueryOngoingOrder()
-    {
-        var optionalOrder = (await QueryPersonalAccount()).CurrentOrder;
-        if (optionalOrder == null)
-            throw new ArgumentException("There is no ongoing order, please select one.");
-
-        return optionalOrder;
     }
 
     public async Task<List<User>> QueryAllUsers() => //TODO Admin
@@ -114,11 +92,11 @@ public class UserService : IUserService
 
     public async Task<User> TakeOrder(int orderId)
     {
-        var user = await QueryPersonalAccount();
+        var user = await _userContextService.QueryPersonalAccount();
         user.ThrowIfHasOngoingOrder();
 
         var order = await _orderService.QueryOrderById(orderId);
-        order.ThrowIfIsInPicking();
+        order.ThrowIfCannotBePicked();
         
         user.StartOrder(order);
         order.CurrentUserId = user.Id;
