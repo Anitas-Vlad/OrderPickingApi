@@ -34,14 +34,23 @@ public class OrderService : IOrderService
     public async Task<Order> SetPalette(string paletteId)
     {
         var order = await _userContextService.QueryOngoingOrder();
-        var palette = await _paletteService.CreatePalette(paletteId);
-        //TODO Check if the palette already exists for another Order
+        var optionalPalette = await _paletteService.GetOptionalPaletteInProgress(paletteId, order.Id);
+        
+        if (optionalPalette == null)
+        {
+            var palette = await _paletteService.CreatePalette(paletteId);
 
-        palette.OrderId = order.Id;
-        order.Palettes.Add(palette);
+            palette.OrderId = order.Id;
+            order.SetOngoingPalette(palette);
+            
+            _context.Palettes.Update(palette);
+        }
+        else
+        {
+            order.SetOngoingPalette(optionalPalette);
+        }
 
         _context.Orders.Update(order);
-        _context.Palettes.Update(palette);
         await _context.SaveChangesAsync();
 
         return order;

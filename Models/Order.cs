@@ -10,17 +10,15 @@ public class Order
     [Required] public int? CurrentUserId { get; set; }
     [Required] public OrderStatus OrderStatus { get; set; } = OrderStatus.Received; //TODO String.ValueOf() for DB
     public List<Palette> Palettes { get; set; }
-    [Required] public string Destination { get; set; }
+    public Palette? OngoingPalette { get; set; }
     public List<Pick> Picks { get; set; }
+    [Required] public string Destination { get; set; }
     [Required] public Queue<PickRequest> RequestedItems { get; set; } //TODO Queue<PickRequest>
     [Required] public Queue<PickRequest> ReplenishedRequestedItems { get; set; } //TODO Queue<PickRequest>
 
     [Required(ErrorMessage = "Mobile number is required.")]
     [Phone(ErrorMessage = "Please enter a valid number.")]
     public string ContactNumber { get; set; }
-
-    public void SetCurrentUserId(int userId)
-        => CurrentUserId = userId;
 
     public void ThrowIfCannotBePicked()
     {
@@ -35,4 +33,15 @@ public class Order
 
     public PickRequest? GetItemById(int itemId)
         => RequestedItems.FirstOrDefault(request => request.ItemId == itemId);
+
+    public void SetOngoingPalette(Palette palette)
+    {
+        if (!Palettes.Contains(palette))
+        {
+            OngoingPalette = palette;
+            Palettes.Add(OngoingPalette);
+        }
+        else
+            OngoingPalette = palette;
+    }
 }

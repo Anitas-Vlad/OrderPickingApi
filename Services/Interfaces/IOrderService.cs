@@ -7,4 +7,5 @@ public interface IOrderService
     Task<List<Order>> QueryAllOrders();
 
     Task<Order> QueryOrderById(int orderId);
+    Task<Order> SetPalette(string paletteId);
 }

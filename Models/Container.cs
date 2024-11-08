@@ -1,9 +1,11 @@
-﻿namespace OrderPickingSystem.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace OrderPickingSystem.Models;
 
 public class Container
 {
-    public int Id { get; set; }
-    public int PaletteId { get; set; }
+    [Required] public string Id { get; set; }
+    public string PaletteId { get; set; }
     public List<Pick> Picks { get; set; } //TODO This should maybe be List<Pick> Picks
 
     public void AddPick(Pick newPick)//TODO This is no physical container. it only contains the picks information.
