@@ -54,34 +54,32 @@ public class PaletteService : IPaletteService
         return palette;
     }
 
-    public async Task<Container> SetContainer(string containerId)
+    public async Task<Palette> SetContainer(string containerId)
     {
         var order = await _userContextService.QueryOngoingOrder();
-        var optionalOngoingPalette = order.OngoingPalette;
-        if (optionalOngoingPalette == null)
+        var ongoingPalette = order.OngoingPalette;
+        if (ongoingPalette == null)
             throw new ArgumentException("You must first select a Palette.");
 
         var optionalContainer =
-            await _containerService.GetOptionalContainerInProgress(containerId, optionalOngoingPalette.Id);
+            await _containerService.GetOptionalContainerInProgress(containerId, ongoingPalette.Id);
 
-        if (optionalContainer == null)
-        {
-            var container = await _containerService.CreateContainer(containerId);
+        if (optionalContainer != null)
+            return await SetContainerToPalette(ongoingPalette, optionalContainer);
 
-            container.PaletteId = optionalOngoingPalette.Id;
-            optionalOngoingPalette.SetContainer(container);
+        var container = await _containerService.CreateContainer(containerId);
 
-            _context.Containers.Update(container);
-            await _context.SaveChangesAsync();
+        return await SetContainerToPalette(ongoingPalette, container);
+    }
 
-            return container;
-        }
+    private async Task<Palette> SetContainerToPalette(Palette palette, Container container)
+    {
+        container.PaletteId = palette.Id;
+        palette.SetContainer(container);
 
-        optionalContainer.PaletteId = optionalOngoingPalette.Id;
-        optionalOngoingPalette.SetContainer(optionalContainer);
-
-        _context.Containers.Update(optionalContainer);
+        _context.Palettes.Update(palette);
+        _context.Containers.Update(container);
         await _context.SaveChangesAsync();
-        return optionalContainer;
+        return palette;
     }
 }

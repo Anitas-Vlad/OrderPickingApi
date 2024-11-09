@@ -20,13 +20,8 @@ public class ContainerService : IContainerService
         _userContextService = userContextService;
     }
 
-    public async Task<Container> QueryContainerById(string containerId)
-    {
-        var container = await _context.Containers.SingleOrDefaultAsync(container => container.Id == containerId);
-        if (container == null)
-            throw new ArgumentException("Container not found.");
-        return container;
-    }
+    public async Task<Container?> QueryContainerById(string containerId)
+        => await _context.Containers.SingleOrDefaultAsync(container => container.Id == containerId);
 
     public async Task<Container> CreateContainer(string containerId)
     {
@@ -41,12 +36,12 @@ public class ContainerService : IContainerService
         return container;
     }
 
-    private void IsContainerIdValid(string containerId)
+    private void MatchesContainerIdPattern(string containerId)
     {
         if (!_containerIdPattern.IsMatch(containerId))
             throw new ArgumentException("Invalid Container Id.");
     }
-    
+
     public async Task<Container?> GetOptionalContainerInProgress(string containerId, string paletteId)
     {
         var container = await QueryContainerById(containerId);
@@ -57,7 +52,8 @@ public class ContainerService : IContainerService
         return container;
     }
 
-    // public async Task AddItemToContainer(int containerId, Item item) //TODO Integrate all Item updates. Location/Stock
+    //TODO Integrate all Item updates. Location/Stock
+    // public async Task AddItemToContainer(int containerId, Item item)
     // {
     //     var container = await QueryContainerById(containerId);
     // }

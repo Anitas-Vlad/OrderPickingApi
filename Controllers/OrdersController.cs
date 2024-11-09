@@ -23,4 +23,8 @@ public class OrdersController : ControllerBase
     [Route("/{orderId}")]
     public async Task<ActionResult<Order>> GetOrderById(int orderId)
         => await _orderService.QueryOrderById(orderId);
+
+    [HttpPatch]
+    public async Task<ActionResult<Order>> SetPalette(string paletteId)
+        => await _orderService.SetPalette(paletteId);
 }

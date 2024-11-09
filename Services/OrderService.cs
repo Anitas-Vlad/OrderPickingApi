@@ -40,22 +40,25 @@ public class OrderService : IOrderService
         {
             var palette = await _paletteService.CreatePalette(paletteId);
 
-            palette.OrderId = order.Id;
-            order.SetOngoingPalette(palette);
-
-            _context.Palettes.Update(palette);
+            await SetPaletteToOrder(palette, order);
         }
         else
         {
-            optionalPalette.OrderId = order.Id;
-            order.SetOngoingPalette(optionalPalette);
-            
-            _context.Palettes.Update(optionalPalette);
+            await SetPaletteToOrder(optionalPalette, order);
         }
 
-        _context.Orders.Update(order);
         await _context.SaveChangesAsync();
 
         return order;
+    }
+
+    private async Task SetPaletteToOrder(Palette palette, Order order)
+    {
+        palette.OrderId = order.Id;
+        order.SetOngoingPalette(palette);
+
+        _context.Orders.Update(order);
+        _context.Palettes.Update(palette);
+        await _context.SaveChangesAsync();
     }
 }
