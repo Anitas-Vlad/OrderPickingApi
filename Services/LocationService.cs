@@ -137,11 +137,9 @@ public class LocationService : ILocationService
         return orderedLocations;
     }
 
-    public Location ScanLocation(Location expectedLocation, int locationId)
+    public void ScanLocation(int? expectedLocationId, int locationId)
     {
-        if (expectedLocation.Id != locationId)
-            throw new ArgumentException("Location does not match.");
-
-        return expectedLocation;
+        if (expectedLocationId == null || expectedLocationId != locationId)
+            throw new ArgumentException("Incorrect location scanned. Please verify and try again.");
     }
 }

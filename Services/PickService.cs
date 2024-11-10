@@ -30,18 +30,18 @@ public class PickService : IPickService
         throw new NotImplementedException();
     }
 
-    public Pick CreatePick(CreatePickRequest request)
-    {
-        return new Pick
-        {
-            ContainerId = request.ContainerId,
-            DateTime = DateTime.Now.ToLocalTime(),
-            ItemId = request.ItemId,
-            LocationId = request.LocationId,
-            Quantity = request.Quantity,
-            UserId = request.UserId
-        };
-    }
+    // public Pick CreatePick(CreatePickRequest request)
+    // {
+    //     return new Pick
+    //     {
+    //         ContainerId = request.ContainerId,
+    //         DateTime = DateTime.Now.ToLocalTime(),
+    //         ItemId = request.ItemId,
+    //         LocationId = request.LocationId,
+    //         Quantity = request.Quantity,
+    //         UserId = request.UserId
+    //     };
+    // }
 
     public Task PickFromLocation(PickRequest request)
     {
