@@ -8,4 +8,5 @@ public interface IContainerService
     Task<Container> CreateContainer(string containerId);
     Task<Container?> GetOptionalContainerInProgress(string containerId, string paletteId);
     Task<Container> SetContainer(string containerId);
+    void ScanContainer(int? expectedContainerId, int containerId);
 }

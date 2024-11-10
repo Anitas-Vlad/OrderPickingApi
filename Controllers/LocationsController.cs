@@ -28,12 +28,13 @@ public class LocationsController : ControllerBase
     }
 
     [HttpPost]
-    [Route("/VerifyLocation.")]
-    public void VerifyLocation(int locationId)
+    [Route("/VerifyLocation")]
+    public ActionResult VerifyLocation(int locationId)
     {
         var expectedLocationId = HttpContext.Session.GetInt32("ExpectedLocationId");
         
         _locationService.ScanLocation(expectedLocationId, locationId);
+        return Ok("Location verified successfully.");
     }
 
     [HttpGet]

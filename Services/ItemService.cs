@@ -22,4 +22,10 @@ public class ItemService : IItemService
             throw new ArgumentException("Item not found.");
         return item;
     }
+
+    public void ScanItem(int? expectedItemId, int itemId)
+    {
+        if (expectedItemId == null || expectedItemId!= itemId)
+            throw new ArgumentException("Incorrect item scanned. Please verify and try again.");
+    }
 }

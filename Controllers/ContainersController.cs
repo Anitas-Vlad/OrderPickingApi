@@ -25,12 +25,22 @@ public class ContainersController : ControllerBase
         return container;
     }
     
-    [HttpPatch]
+    [HttpPost]
     public async Task<ActionResult<Container>> SetContainer(string containerId)
     {
         var container = await _containerService.SetContainer(containerId);
         HttpContext.Session.SetString("OngoingContainerId", container.Id);
         return container;
+    }
+
+    [HttpPost]
+    [Route("/VerifyContainer/{containerId}")]
+    public ActionResult VerifyContainer(int containerId)
+    {
+        var expectedContainerId = HttpContext.Session.GetInt32("OngoingContainerId");
+
+        _containerService.ScanContainer(expectedContainerId, containerId);
+        return Ok("Container verified successfully.");
     }
     
     // [HttpPost]

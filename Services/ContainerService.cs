@@ -70,6 +70,12 @@ public class ContainerService : IContainerService
         return await SetContainerToPalette(ongoingPalette, container);
     }
 
+    public void ScanContainer(int? expectedContainerId, int containerId)
+    {
+        if (expectedContainerId == null || expectedContainerId != containerId)
+            throw new ArgumentException("Incorrect container scanned. Please verify and try again.");
+    }
+
     private async Task<Container> SetContainerToPalette(Palette palette, Container container)
     {
         container.PaletteId = palette.Id;
