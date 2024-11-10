@@ -35,7 +35,7 @@ public class OrderService : IOrderService
     {
         var order = await _userContextService.QueryOngoingOrder();
         var optionalPalette = await _paletteService.GetOptionalPaletteInProgress(paletteId, order.Id);
-
+        
         if (optionalPalette == null)
         {
             var palette = await _paletteService.CreatePalette(paletteId);

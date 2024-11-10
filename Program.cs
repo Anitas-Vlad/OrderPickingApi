@@ -64,6 +64,15 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddControllers();
+
+builder.Services.AddSession(options =>
+{
+    // Optional: Set the session timeout period; 20 minutes is the default.
+    options.IdleTimeout = TimeSpan.FromMinutes(20);
+    options.Cookie.HttpOnly = true; // Helps prevent JavaScript access to the session cookie.
+    options.Cookie.IsEssential = true; // Allows session cookie even if the user hasn't consented to cookies.
+});
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
@@ -114,6 +123,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSession();
 
 app.UseHttpsRedirection();
 

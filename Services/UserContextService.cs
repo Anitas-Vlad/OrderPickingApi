@@ -28,20 +28,21 @@ public class UserContextService : IUserContextService
 
         return userId;
     }
-    
+
     public async Task<User> QueryPersonalAccount()
     {
         var userId = GetUserId();
 
         var user = await _context.Users
             .Where(user => user.Id == userId)
+            .Include(user => user.CurrentOrder) //TODO may need to include every(needed) info from order
             .FirstOrDefaultAsync();
 
         if (user == null) throw new ArgumentException("You are not logged in.");
 
         return user;
     }
-    
+
     public async Task<Order> QueryOngoingOrder()
     {
         var optionalOrder = (await QueryPersonalAccount()).CurrentOrder;

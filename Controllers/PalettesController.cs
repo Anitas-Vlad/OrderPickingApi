@@ -25,8 +25,4 @@ public class PalettesController : ControllerBase
 
         return palette;
     }
-
-    [HttpPatch]
-    public async Task<ActionResult<Palette>> SetContainer(string containerId)
-        => await _paletteService.SetContainer(containerId);
 }

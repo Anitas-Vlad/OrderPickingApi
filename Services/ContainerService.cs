@@ -51,6 +51,35 @@ public class ContainerService : IContainerService
 
         return container;
     }
+    
+    public async Task<Container> SetContainer(string containerId)
+    {
+        var order = await _userContextService.QueryOngoingOrder();
+        var ongoingPalette = order.OngoingPalette;
+        if (ongoingPalette == null)
+            throw new ArgumentException("You must first select a Palette.");
+
+        var optionalContainer =
+            await GetOptionalContainerInProgress(containerId, ongoingPalette.Id);
+
+        if (optionalContainer != null)
+            return await SetContainerToPalette(ongoingPalette, optionalContainer);
+
+        var container = await CreateContainer(containerId);
+
+        return await SetContainerToPalette(ongoingPalette, container);
+    }
+
+    private async Task<Container> SetContainerToPalette(Palette palette, Container container)
+    {
+        container.PaletteId = palette.Id;
+        palette.SetContainer(container);
+
+        _context.Palettes.Update(palette);
+        _context.Containers.Update(container);
+        await _context.SaveChangesAsync();
+        return container;
+    }
 
     //TODO Integrate all Item updates. Location/Stock
     // public async Task AddItemToContainer(int containerId, Item item)

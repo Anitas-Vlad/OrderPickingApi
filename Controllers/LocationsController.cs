@@ -17,8 +17,22 @@ public class LocationsController : ControllerBase
 
     [HttpGet]
     [Route("/NextLocation")]
-    public async Task<ActionResult<Location>> GetNextLocation() //TODO order comes from loggedIn User.CurrentOrder
-        => await _locationService.QueryNextLocation();
+    public async Task<ActionResult<Location>> GetNextLocation() // order comes from loggedIn User.CurrentOrder
+    {
+        var location = await _locationService.QueryNextLocation();
+        HttpContext.Session.SetInt32("ExpectedLocationId", location.Id);
+        return location;
+    }
+
+    [HttpPost]
+    [Route("/VerifyLocation")]
+    public void VerifyLocation(int locationId)
+    {
+        var expectedLocationId = HttpContext.Session.GetInt32("ExpectedLocationId");
+
+        if (expectedLocationId == null || expectedLocationId != locationId)
+            throw new ArgumentException("Incorrect location scanned. Please verify and try again.");
+    }
 
     [HttpGet]
     [Route("/{locationId}")]

@@ -13,8 +13,8 @@ public class Order
     public Palette? OngoingPalette { get; set; }
     public List<Pick> Picks { get; set; }
     [Required] public string Destination { get; set; }
-    [Required] public Queue<PickRequest> RequestedItems { get; set; } //TODO Queue<PickRequest>
-    [Required] public Queue<PickRequest> ReplenishedRequestedItems { get; set; } //TODO Queue<PickRequest>
+    [Required] public Queue<PickRequest> RequestedItems { get; set; }
+    [Required] public Queue<PickRequest> ReplenishedRequestedItems { get; set; }
 
     [Required(ErrorMessage = "Mobile number is required.")]
     [Phone(ErrorMessage = "Please enter a valid number.")]

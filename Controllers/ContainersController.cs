@@ -24,4 +24,22 @@ public class ContainersController : ControllerBase
             throw new ArgumentException("Container not found.");
         return container;
     }
+    
+    [HttpPatch]
+    public async Task<ActionResult<Container>> SetContainer(string containerId)
+    {
+        var container = await _containerService.SetContainer(containerId);
+        HttpContext.Session.SetString("OngoingContainerId", container.Id);
+        return container;
+    }
+    
+    // [HttpPost]
+    // [Route("/VerifyOngoingContainer")]
+    // public void VerifyOngoingContainer(string containerId)
+    // {
+    //     var expectedLocationId = HttpContext.Session.GetString("OngoingContainerId");
+    //     
+    //     if (expectedLocationId == null || expectedLocationId != containerId)
+    //         throw new ArgumentException("Incorrect container scanned. Please verify and try again.");
+    // }
 }

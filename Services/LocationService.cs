@@ -11,7 +11,8 @@ public class LocationService : ILocationService
     private readonly IUserService _userService;
     private readonly IUserContextService _userContextService;
 
-    public LocationService(OrderPickingContext context, IUserService userService, IUserContextService userContextService)
+    public LocationService(OrderPickingContext context, IUserService userService,
+        IUserContextService userContextService)
     {
         _context = context;
         _userService = userService;
@@ -134,5 +135,13 @@ public class LocationService : ILocationService
         }
 
         return orderedLocations;
+    }
+
+    public Location ScanLocation(Location expectedLocation, int locationId)
+    {
+        if (expectedLocation.Id != locationId)
+            throw new ArgumentException("Location does not match.");
+
+        return expectedLocation;
     }
 }

@@ -38,7 +38,7 @@ public class PaletteService : IPaletteService
         return palette;
     }
 
-    private void IsPaletteIdValid(string paletteId)
+    private void MatchesPaletteIdPattern(string paletteId)
     {
         if (!_paletteIdPattern.IsMatch(paletteId))
             throw new ArgumentException("Invalid Palette Id.");
@@ -51,35 +51,6 @@ public class PaletteService : IPaletteService
         if (palette != null && palette.OrderId != orderId)
             throw new ArgumentException("Invalid Palette.");
 
-        return palette;
-    }
-
-    public async Task<Palette> SetContainer(string containerId)
-    {
-        var order = await _userContextService.QueryOngoingOrder();
-        var ongoingPalette = order.OngoingPalette;
-        if (ongoingPalette == null)
-            throw new ArgumentException("You must first select a Palette.");
-
-        var optionalContainer =
-            await _containerService.GetOptionalContainerInProgress(containerId, ongoingPalette.Id);
-
-        if (optionalContainer != null)
-            return await SetContainerToPalette(ongoingPalette, optionalContainer);
-
-        var container = await _containerService.CreateContainer(containerId);
-
-        return await SetContainerToPalette(ongoingPalette, container);
-    }
-
-    private async Task<Palette> SetContainerToPalette(Palette palette, Container container)
-    {
-        container.PaletteId = palette.Id;
-        palette.SetContainer(container);
-
-        _context.Palettes.Update(palette);
-        _context.Containers.Update(container);
-        await _context.SaveChangesAsync();
         return palette;
     }
 }
