@@ -17,9 +17,9 @@ public class PickService : IPickService
         _itemService = itemService;
     }
 
-    public async Task<List<Pick>> QueryAllPicks() 
+    public async Task<List<Pick>> QueryAllPicks()
         => await _context.Picks.ToListAsync();
-    
+
     public Task<List<Pick>> QueryPicksByContainerId(int containerId)
     {
         throw new NotImplementedException();
@@ -30,9 +30,17 @@ public class PickService : IPickService
         throw new NotImplementedException();
     }
 
-    public Task<Pick> CreatePick()
+    public Pick CreatePick(CreatePickRequest request)
     {
-        throw new NotImplementedException();
+        return new Pick
+        {
+            ContainerId = request.ContainerId,
+            DateTime = DateTime.Now.ToLocalTime(),
+            ItemId = request.ItemId,
+            LocationId = request.LocationId,
+            Quantity = request.Quantity,
+            UserId = request.UserId
+        };
     }
 
     public Task PickFromLocation(PickRequest request)

@@ -51,7 +51,6 @@ public class Order
             OngoingPalette = palette;
             Palettes.Add(OngoingPalette);
         }
-        else
-            OngoingPalette = palette;
+        else OngoingPalette = palette;
     }
 }
