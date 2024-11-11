@@ -4,7 +4,8 @@ using OrderPickingSystem.Models.Requests;
 
 namespace OrderPickingSystem.Models;
 
-public class Order
+public class Order //TODO public Queue<Location> Locations{get;set;} Set them once and after look through them when
+    //QueryNextLocation instead of constantly looking through all picking locations. 
 {
     public int Id { get; set; }
     [Required] public int? CurrentUserId { get; set; }
@@ -13,8 +14,9 @@ public class Order
     public Palette? OngoingPalette { get; set; }
     public List<Pick> Picks { get; set; }
     [Required] public string Destination { get; set; }
-    [Required] public Queue<PickRequest> RequestedItems { get; set; }
-    [Required] public Queue<PickRequest> ReplenishedRequestedItems { get; set; }
+    public Queue<Location> Locations { get; set; } //TODO Check
+    [Required] public List<PickRequest> RequestedItems { get; set; }
+    [Required] public List<PickRequest> ReplenishedRequestedItems { get; set; }
 
     [Required(ErrorMessage = "Mobile number is required.")]
     [Phone(ErrorMessage = "Please enter a valid number.")]
@@ -30,7 +32,7 @@ public class Order
     //     return OngoingPalette;
     // }
 
-    public void ThrowIfCannotBePicked()
+    public void ThrowIfCannotBeTaken()
     {
         if (OrderStatus == OrderStatus.Picking)
             throw new ArgumentException("This order is taken by another worker.");
@@ -38,8 +40,8 @@ public class Order
             throw new ArgumentException("There are no more items to be picked.");
     }
 
-    public void EnqueueReplenishItem(PickRequest request)
-        => ReplenishedRequestedItems.Enqueue(request);
+    public void AddReplenishItem(PickRequest request)
+        => ReplenishedRequestedItems.Add(request);
 
     public PickRequest? GetItemById(int itemId)
         => RequestedItems.FirstOrDefault(request => request.ItemId == itemId);

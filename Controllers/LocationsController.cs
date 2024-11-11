@@ -27,6 +27,15 @@ public class LocationsController : ControllerBase
         return location;
     }
 
+    [HttpPatch]
+    [Route("/SetLocationsForOrder")]
+    public async Task<ActionResult> SetLocationsForOrder()
+    {
+        await _locationService.SetOrderLocations();
+
+        return Ok("Locations set successfully.");
+    }
+
     [HttpPost]
     [Route("/VerifyLocation")]
     public ActionResult VerifyLocation(int locationId)
@@ -41,4 +50,5 @@ public class LocationsController : ControllerBase
     [Route("/{locationId}")]
     public async Task<Location> GetLocationById(int locationId)
         => await _locationService.QueryLocationById(locationId);
+    
 }

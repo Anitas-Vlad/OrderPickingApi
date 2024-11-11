@@ -1,24 +1,30 @@
 ﻿
-TODO * At least 2 API's. But this can turn into multiple/related projects. 
+TODO * Multiple Apis. But this can turn into multiple/related projects. 
 1. Destination API
 2. Order Picking API
 
-TODO * Admin API
-- Create an API for the administration. Only there, users (workers) can be added and their rights edited.
+TODO * Admin Controllers / Admin Authorize
+Only there, users (workers) can be added and their rights edited.
 - ex: 
 GetAllUsers() - should not be in the workers Api.
 AddUser()
 EditUser()
 ViewPaletteInfo() 
 RemoveItemFromContainer() 
+EditPicks()
+EditContainer()
+EditPalette()
 
-TODO * Item types
-- StockItem - all there is in the warehouse
-- LocationItem - All there is at the location, and if it gets to 0, before a picker gets to it, 
-it will be turned into replenishment
-- Item - The one to be picked.
 
 TODO * Take in consideration the Location Floors.
 - This is not needed. Items must be generated one by one and searched for/ordered. or if there are not enough, added to the order.ReplenishItems.
 
 TODO * For now I am constantly checking for the OnGoing Order a user is Picking. I need to add it to claims or something similar so that everything is simplified.
+
+TODO * Refactor LocationService.QueryNextLocation: 
+- Order has public Queue<Location> Locations that are set whenever a user takes that order.
+- Therefore, I am not querying through all the picking locations to see get the next one, I only look through the ones 
+that contain the items form the order.
+- If there are not enough items in that location, the PickRequest goes to ReplenishItems.
+- When an Item that is in ongoing order's replenish Queue is getting refilled, all the ongoing orders will be updated and the location will go  
+- When a location is refilled with an item, all the ongoing orders will be updated in case they have that item on replenishItems.

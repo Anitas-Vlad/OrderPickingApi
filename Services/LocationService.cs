@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections;
+using Microsoft.EntityFrameworkCore;
 using OrderPickingSystem.Context;
 using OrderPickingSystem.Models;
 using OrderPickingSystem.Services.Interfaces;
@@ -8,14 +9,12 @@ namespace OrderPickingSystem.Services;
 public class LocationService : ILocationService
 {
     private readonly OrderPickingContext _context;
-    private readonly IUserService _userService;
     private readonly IUserContextService _userContextService;
 
-    public LocationService(OrderPickingContext context, IUserService userService,
+    public LocationService(OrderPickingContext context,
         IUserContextService userContextService)
     {
         _context = context;
-        _userService = userService;
         _userContextService = userContextService;
     }
 
@@ -27,11 +26,42 @@ public class LocationService : ILocationService
         return location;
     }
 
+    public async Task SetOrderLocations()
+    {
+        var order = await _userContextService.QueryOngoingOrder();
+
+        var pickingLocationsQueue = await GetPickingLocationsQueue();
+
+        var orderLocations = order.Locations;
+
+        while (pickingLocationsQueue.Count > 0)
+        {
+            var nextLocation = pickingLocationsQueue.Dequeue();
+
+            var nextLocationItem = nextLocation.Item;
+            var pickRequest = order.GetItemById(nextLocationItem.LocationId);
+
+            if (pickRequest == null)
+                continue;
+
+            if (!nextLocationItem.CheckIfQuantityIsEnoughToPick(pickRequest.Quantity))
+            {
+                order.AddReplenishItem(pickRequest);
+                _context.Orders.Update(order);
+            }
+
+            orderLocations.Enqueue(nextLocation);
+        }
+
+        _context.Orders.Update(order);
+        await _context.SaveChangesAsync();
+    }
+
     public async Task<Location> QueryNextLocation()
     {
         var order = await _userContextService.QueryOngoingOrder();
 
-        var pickingLocationsQueue = await GetLocationsQueue();
+        var pickingLocationsQueue = await GetPickingLocationsQueue();
         var itemFound = false;
 
         var nextLocation = pickingLocationsQueue.Dequeue();
@@ -55,7 +85,7 @@ public class LocationService : ILocationService
 
             if (!nextLocationItem.CheckIfQuantityIsEnoughToPick(pickRequest.Quantity))
             {
-                order.EnqueueReplenishItem(pickRequest);
+                order.AddReplenishItem(pickRequest);
                 _context.Orders.Update(order);
             }
             else
@@ -65,13 +95,50 @@ public class LocationService : ILocationService
         return nextLocation;
     }
 
-    private async Task<Queue<Location>> GetLocationsQueue()
+    public async Task<Location> QueryNextLocationV2()
+    {
+        var order = await _userContextService.QueryOngoingOrder();
+
+        var pickingLocationsQueue = await GetPickingLocationsQueue();
+        var itemFound = false;
+
+        var nextLocation = pickingLocationsQueue.Dequeue();
+
+        while (itemFound == false)
+        {
+            if (nextLocation == null)
+            {
+                if (order.ReplenishedRequestedItems.Count > 0)
+                    throw new ArgumentException(
+                        "There are still items to be picked. Leave the Palette in the Replenish Area.");
+
+                throw new ArgumentException("The order is completed. You must now print the label.");
+            }
+
+            var nextLocationItem = nextLocation.Item;
+            var pickRequest = order.GetItemById(nextLocationItem.LocationId);
+
+            if (pickRequest == null)
+                continue;
+
+            if (!nextLocationItem.CheckIfQuantityIsEnoughToPick(pickRequest.Quantity))
+            {
+                order.AddReplenishItem(pickRequest);
+                _context.Orders.Update(order);
+            }
+            else
+                itemFound = true;
+        }
+
+        return nextLocation;
+    }
+
+    private async Task<Queue<Location>> GetPickingLocationsQueue()
     {
         var dictionary = await QueryPickingLocations();
-        var locationsQueue = OrderLocationsQueue(dictionary);
+        var locationsQueue = SortLocationsQueue(dictionary);
 
         return locationsQueue;
-        // return OrderPickingLocationsQueue(await QueryPickingLocations());
     }
 
     private async Task<SortedDictionary<int, List<Location>>> QueryPickingLocations()
@@ -87,7 +154,7 @@ public class LocationService : ILocationService
     private async Task<Queue<Location>> GetReplenishLocationsQueue()
     {
         var dictionary = await QueryReplenishLocations();
-        var locationsQueue = OrderLocationsQueue(dictionary);
+        var locationsQueue = SortLocationsQueue(dictionary);
 
         return locationsQueue;
     }
@@ -103,7 +170,7 @@ public class LocationService : ILocationService
         return sortedLocations;
     }
 
-    private Queue<Location> OrderLocationsQueue(SortedDictionary<int, List<Location>> locationsDictionary)
+    private Queue<Location> SortLocationsQueue(SortedDictionary<int, List<Location>> locationsDictionary)
     {
         var locationsQueue = new Queue<Location>();
         foreach (var (key, isleLocations) in locationsDictionary)
