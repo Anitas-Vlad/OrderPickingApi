@@ -19,9 +19,23 @@ public class OrderService : IOrderService
         _userContextService = userContextService;
     }
 
-    //TODO AdminApi
     public async Task<List<Order>> QueryAllOrders()
-        => await _context.Orders.Order().ToListAsync();
+        => await _context.Orders.ToListAsync();
+
+    private async Task<List<Order>> QueryOrdersByReplenishItemId(int itemId) =>
+        await _context.Orders
+            .Where(order => order.ReplenishedRequestedItems.Any(item => item.ItemId == itemId))
+            .ToListAsync();
+
+    public async void UpdateOrdersByReplenishItemId(int itemId)
+    {
+        var orders = await QueryOrdersByReplenishItemId(itemId);
+
+        foreach (var order in orders)
+        {
+            
+        }
+    }
 
     public async Task<Order> QueryOrderById(int orderId)
     {

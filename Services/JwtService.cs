@@ -19,14 +19,18 @@ public class JwtService : IJwtService
 
     public string CreateToken(User user)
     {
-        var userRoleClaim = new Claim(ClaimTypes.Role, Enum.GetName(typeof(UserRole), user.Role)!.ToUpperInvariant());
+        // var userRoleClaim = new Claim(ClaimTypes.Role, Enum.GetName(typeof(UserRole), user.)!.ToUpperInvariant());
+        
         var claims = new List<Claim>
         {
             new(ClaimTypes.Name, user.Username),
-            userRoleClaim,
             new(ClaimTypes.NameIdentifier, user.Id.ToString())
         };
-        Console.WriteLine("Token was created with the User.Role: " + userRoleClaim.Value);
+
+        claims.AddRange(user.Roles.Select(role =>
+            new Claim(ClaimTypes.Role, Enum.GetName(typeof(UserRole), role)!.ToUpperInvariant())));
+
+        Console.WriteLine("Token was created with claims: " + claims);
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
             _configuration.GetSection("JwtSettings:Token").Value!));
@@ -34,7 +38,7 @@ public class JwtService : IJwtService
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
         var header = new JwtHeader(credentials);
 
-        var payload = new JwtPayload("OrderPickingSystem", "http://localhost:5076", //TODO Edit the Issuer and Audience according to your project.
+        var payload = new JwtPayload("OrderPickingSystem", "http://localhost:5076",
             claims,
             null, DateTime.Today.AddDays(7));
 

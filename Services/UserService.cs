@@ -18,7 +18,8 @@ public class UserService : IUserService
     private readonly IOrderService _orderService;
     private readonly IUserMapper _userMapper;
 
-    public UserService(OrderPickingContext context, IOrderService orderService, IUserContextService userContextService, IUserMapper userMapper)
+    public UserService(OrderPickingContext context, IOrderService orderService, IUserContextService userContextService,
+        IUserMapper userMapper)
     {
         _context = context;
         _mailPattern = new("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
@@ -29,7 +30,7 @@ public class UserService : IUserService
     }
 
     public async Task<bool> CheckIfUserHasAdminRights()
-        => (await _userContextService.QueryPersonalAccount()).Role == UserRole.Admin;
+        => (await _userContextService.QueryPersonalAccount()).HasAdminRights();
 
     public async Task<User> QueryUserById(int userId)
     {
@@ -97,11 +98,11 @@ public class UserService : IUserService
 
         var order = await _orderService.QueryOrderById(orderId);
         order.ThrowIfCannotBeTaken();
-        
+
         user.StartOrder(order);
         order.CurrentUserId = user.Id;
         order.OrderStatus = OrderStatus.Picking;
-        
+
         _context.Orders.Update(order);
         _context.Users.Update(user);
         await _context.SaveChangesAsync();

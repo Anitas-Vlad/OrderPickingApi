@@ -2,11 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using OrderPickingSystem.Context;
 using OrderPickingSystem.Models;
+using OrderPickingSystem.Models.Requests;
 using OrderPickingSystem.Services.Interfaces;
 
 namespace OrderPickingSystem.Services;
 
-public class LocationService : ILocationService
+public class LocationService : ILocationService, IReachService
 {
     private readonly OrderPickingContext _context;
     private readonly IUserContextService _userContextService;
@@ -24,6 +25,27 @@ public class LocationService : ILocationService
         if (location == null)
             throw new ArgumentException("Location not found.");
         return location;
+    }
+
+    private async Task<Location> QueryReachLocationByItemId(int itemId)
+    {
+        var location = await _context.Locations
+            .Where(location => location.Floor > 1)
+            .FirstOrDefaultAsync(location => location.Item.Id == itemId);
+
+        if (location == null)
+            throw new ArgumentException("There are no more ");
+
+        return location;
+    }
+
+    public async void RelocateItem(RelocateItemRequest request)
+    {
+        var location = await QueryReachLocationByItemId(request.ItemId);
+        var initialLocation = QueryLocationById(request.InitialLocationId);
+        var destinationLocation = QueryLocationById(request.DestinationLocationId);
+        
+        
     }
 
     public async Task SetOrderLocations()

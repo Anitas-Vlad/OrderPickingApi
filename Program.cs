@@ -39,8 +39,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthorization(options =>
     {
         options.AddPolicy("ADMIN", policy => policy.RequireRole(UserRole.Admin.ToString().ToUpperInvariant()));
-        options.AddPolicy("WORKER", policy => policy.RequireRole(UserRole.Worker.ToString().ToUpperInvariant()));
-        options.AddPolicy("ADMINANDWORKER", policy => policy.RequireRole(UserRole.Worker.ToString(), UserRole.Admin.ToString().ToUpperInvariant()));
+        options.AddPolicy("WORKER", policy => policy.RequireRole(UserRole.Picker.ToString().ToUpperInvariant()));
+        options.AddPolicy("ADMINANDWORKER", policy => policy.RequireRole(UserRole.Picker.ToString(), UserRole.Admin.ToString().ToUpperInvariant()));
     }
 );
 
