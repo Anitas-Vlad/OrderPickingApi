@@ -22,6 +22,7 @@ public class OrderPickingContext : DbContext
 
     public DbSet<User> Users { get; set; } = default!;
     public DbSet<PickingOrder> PickOrders { get; set; } = default!;
+    public DbSet<PickingOrder> ReachingOrders { get; set; } = default!;
     public DbSet<Order> Orders { get; set; } = default!;
     public DbSet<Container> Containers { get; set; } = default!;
     public DbSet<Item> Items { get; set; } = default!;

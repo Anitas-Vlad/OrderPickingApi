@@ -19,7 +19,7 @@ public class OrderService : IOrderService
         _userContextService = userContextService;
     }
 
-    public async Task<List<Order>> QueryAllOrders()
+    public async Task<List<Order>> QueryAllOrders() //TODO Override after breaking this service into Reach/Pick Service
         => await _context.Orders.ToListAsync();
 
     private async Task<List<PickingOrder>> QueryOrdersByReplenishItemId(int itemId) =>
@@ -27,7 +27,7 @@ public class OrderService : IOrderService
             .Where(order => order.ReplenishedRequestedItems.Any(item => item.ItemId == itemId))
             .ToListAsync();
 
-    public async void UpdateOrdersByReplenishItemId(int itemId)
+    public async void UpdateOrdersByReplenishedItemId(int itemId)
     {
         var orders = await QueryOrdersByReplenishItemId(itemId);
 

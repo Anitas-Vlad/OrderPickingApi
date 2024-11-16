@@ -32,3 +32,7 @@ that contain the items form the order.
 TODO * Order branched out. 
 - PickOrder 
 - RelocateOrder
+
+TODO * Create Pick
+- After scanning to confirm the containerId, create pick.
+- Update everything related.

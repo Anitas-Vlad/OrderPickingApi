@@ -7,6 +7,6 @@ public interface IPickService
 {
     Task<List<Pick>> QueryPicksByContainerId(int containerId);
     Task<List<Pick>> QueryPicksByOrderId(int orderId);
-    // Pick CreatePick(CreatePickRequest request);
-    Task PickFromLocation(PickRequest request);
+    Task<Pick> CreatePick(CreatePickRequest request);
+    // Task<Pick> PickFromLocation(CreatePickRequest request);
 }

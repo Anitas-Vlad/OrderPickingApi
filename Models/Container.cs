@@ -6,7 +6,7 @@ public class Container
 {
     [Required] public string Id { get; set; }
     public string PaletteId { get; set; }
-    public List<Pick> Picks { get; set; } //TODO This should maybe be List<Pick> Picks
+    public List<Pick> Picks { get; set; }
 
     // public void AddPick(Pick newPick)//TODO Remember this is not a physical container. it only contains the picks information.
     // {

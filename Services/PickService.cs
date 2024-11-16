@@ -43,8 +43,18 @@ public class PickService : IPickService
     //     };
     // }
 
-    public Task PickFromLocation(PickRequest request)
+    public async Task<Pick> CreatePick(CreatePickRequest request)
     {
-        throw new NotImplementedException();
+        var pick = new Pick
+        {
+            ItemId = request.ItemId,
+            UserId = request.UserId,
+            ContainerId = request.ContainerId,
+            LocationId = request.LocationId,
+            Quantity = request.Quantity
+        };
+        _context.Picks.Add(pick);
+        await _context.SaveChangesAsync();
+        return pick;
     }
 }
