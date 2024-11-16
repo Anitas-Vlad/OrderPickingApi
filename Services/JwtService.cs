@@ -19,8 +19,6 @@ public class JwtService : IJwtService
 
     public string CreateToken(User user)
     {
-        // var userRoleClaim = new Claim(ClaimTypes.Role, Enum.GetName(typeof(UserRole), user.)!.ToUpperInvariant());
-        
         var claims = new List<Claim>
         {
             new(ClaimTypes.Name, user.Username),

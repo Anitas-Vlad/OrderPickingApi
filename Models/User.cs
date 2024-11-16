@@ -24,15 +24,9 @@ public class User
     public void StartOrder(Order order)
         => CurrentOrder = order;
 
-    // public void AddAdminRights()
-    //     => Role = UserRole.Admin;
-
     public bool HasAdminRights()
-    {
-        return Roles.Any(role => role == UserRole.Admin);
-    }
+        => Roles.Any(role => role == UserRole.Admin);
 
-
-//     public void RemoveAdminRights()
-//         => Role = UserRole.Worker;
+    public bool HasReacherRights()
+        => Roles.Any(role => role == UserRole.Reacher);
 }

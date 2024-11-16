@@ -12,6 +12,6 @@ public class Item
     public void SubtractItem(int quantity) => Quantity -= quantity;
     public void RestockItem(int quantity) => Quantity += quantity;
 
-    public bool CheckIfQuantityIsEnoughToPick(int requestedQuantity)
+    public bool HasEnoughQuantityToPick(int requestedQuantity)
         => Quantity >= requestedQuantity;
 }

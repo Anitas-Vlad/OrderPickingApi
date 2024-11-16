@@ -11,11 +11,13 @@ public class LocationService : ILocationService, IReachService
 {
     private readonly OrderPickingContext _context;
     private readonly IUserContextService _userContextService;
+    private readonly IItemService _itemService;
 
-    public LocationService(OrderPickingContext context,
+    public LocationService(OrderPickingContext context, IItemService itemService,
         IUserContextService userContextService)
     {
         _context = context;
+        _itemService = itemService;
         _userContextService = userContextService;
     }
 
@@ -44,6 +46,7 @@ public class LocationService : ILocationService, IReachService
         var location = await QueryReachLocationByItemId(request.ItemId);
         var initialLocation = QueryLocationById(request.InitialLocationId);
         var destinationLocation = QueryLocationById(request.DestinationLocationId);
+        var item = await _itemService.QueryItemById(request.ItemId);
         
         
     }
@@ -66,7 +69,7 @@ public class LocationService : ILocationService, IReachService
             if (pickRequest == null)
                 continue;
 
-            if (!nextLocationItem.CheckIfQuantityIsEnoughToPick(pickRequest.Quantity))
+            if (!nextLocationItem.HasEnoughQuantityToPick(pickRequest.Quantity))
             {
                 order.AddReplenishItem(pickRequest);
                 _context.Orders.Update(order);
@@ -104,7 +107,7 @@ public class LocationService : ILocationService, IReachService
             if (pickRequest == null)
                 continue;
 
-            if (!nextLocationItem.CheckIfQuantityIsEnoughToPick(pickRequest.Quantity))
+            if (!nextLocationItem.HasEnoughQuantityToPick(pickRequest.Quantity))
             {
                 order.AddReplenishItem(pickRequest);
                 _context.Orders.Update(order);
