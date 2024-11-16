@@ -28,3 +28,4 @@ that contain the items form the order.
 - If there are not enough items in that location, the PickRequest goes to ReplenishItems.
 - When an Item that is in ongoing order's replenish Queue is getting refilled, all the ongoing orders will be updated and the location will go  
 - When a location is refilled with an item, all the ongoing orders will be updated in case they have that item on replenishItems.
+

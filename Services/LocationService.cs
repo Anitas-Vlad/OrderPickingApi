@@ -60,46 +60,7 @@ public class LocationService : ILocationService
     public async Task<Location> QueryNextLocation()
     {
         var order = await _userContextService.QueryOngoingOrder();
-
-        var pickingLocationsQueue = await GetPickingLocationsQueue();
-        var itemFound = false;
-
-        var nextLocation = pickingLocationsQueue.Dequeue();
-
-        while (itemFound == false)
-        {
-            if (nextLocation == null)
-            {
-                if (order.ReplenishedRequestedItems.Count > 0)
-                    throw new ArgumentException(
-                        "There are still items to be picked. Leave the Palette in the Replenish Area.");
-
-                throw new ArgumentException("The order is completed. You must now print the label.");
-            }
-
-            var nextLocationItem = nextLocation.Item;
-            var pickRequest = order.GetItemById(nextLocationItem.LocationId);
-
-            if (pickRequest == null)
-                continue;
-
-            if (!nextLocationItem.CheckIfQuantityIsEnoughToPick(pickRequest.Quantity))
-            {
-                order.AddReplenishItem(pickRequest);
-                _context.Orders.Update(order);
-            }
-            else
-                itemFound = true;
-        }
-
-        return nextLocation;
-    }
-
-    public async Task<Location> QueryNextLocationV2()
-    {
-        var order = await _userContextService.QueryOngoingOrder();
-
-        var pickingLocationsQueue = await GetPickingLocationsQueue();
+        var pickingLocationsQueue = order.Locations;
         var itemFound = false;
 
         var nextLocation = pickingLocationsQueue.Dequeue();
