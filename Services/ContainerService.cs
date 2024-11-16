@@ -55,12 +55,16 @@ public class ContainerService : IContainerService
     public async Task<Container> SetContainer(string containerId)
     {
         var order = await _userContextService.QueryOngoingOrder();
-        var ongoingPalette = order.OngoingPalette;
-        if (ongoingPalette == null)
-            throw new ArgumentException("You must first select a Palette.");
+        
+        if (order is not PickingOrder pickingOrder)
+            throw new ArgumentException("This is not a picking order.");
+        
+        var ongoingPalette = pickingOrder.OngoingPalette;
 
-        var optionalContainer =
-            await GetOptionalContainerInProgress(containerId, ongoingPalette.Id);
+        if (ongoingPalette == null)
+            throw new ArgumentException("Please first set a palette.");
+
+        var optionalContainer = await GetOptionalContainerInProgress(containerId, ongoingPalette.Id);
 
         if (optionalContainer != null)
             return await SetContainerToPalette(ongoingPalette, optionalContainer);

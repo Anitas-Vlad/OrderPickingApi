@@ -4,19 +4,13 @@ using OrderPickingSystem.Models.Requests;
 
 namespace OrderPickingSystem.Models;
 
-public class Order //TODO public Queue<Location> Locations{get;set;} Set them once and after look through them when
-    //QueryNextLocation instead of constantly looking through all picking locations. 
+public class Order
 {
     public int Id { get; set; }
     [Required] public int? CurrentUserId { get; set; }
     [Required] public OrderStatus OrderStatus { get; set; } = OrderStatus.Received; //TODO String.ValueOf() for DB
-    public List<Palette> Palettes { get; set; }
-    public Palette? OngoingPalette { get; set; }
-    public List<Pick> Picks { get; set; }
+    // public List<Palette> Palettes { get; set; }
     [Required] public string Destination { get; set; }
-    public Queue<Location> Locations { get; set; } //TODO Check
-    [Required] public List<PickRequest> RequestedItems { get; set; }
-    [Required] public List<PickRequest> ReplenishedRequestedItems { get; set; }
 
     [Required(ErrorMessage = "Mobile number is required.")]
     [Phone(ErrorMessage = "Please enter a valid number.")]
@@ -32,27 +26,9 @@ public class Order //TODO public Queue<Location> Locations{get;set;} Set them on
     //     return OngoingPalette;
     // }
 
-    public void ThrowIfCannotBeTaken()
+     public void ThrowIfInProgress()
     {
-        if (OrderStatus == OrderStatus.Picking)
+        if (OrderStatus == OrderStatus.InProcess)
             throw new ArgumentException("This order is taken by another worker.");
-        if (!RequestedItems.Any() || !ReplenishedRequestedItems.Any())
-            throw new ArgumentException("There are no more items to be picked.");
-    }
-
-    public void AddReplenishItem(PickRequest request)
-        => ReplenishedRequestedItems.Add(request);
-
-    public PickRequest? GetItemById(int itemId)
-        => RequestedItems.FirstOrDefault(request => request.ItemId == itemId);
-
-    public void SetOngoingPalette(Palette palette)
-    {
-        if (!Palettes.Contains(palette))
-        {
-            OngoingPalette = palette;
-            Palettes.Add(OngoingPalette);
-        }
-        else OngoingPalette = palette;
     }
 }

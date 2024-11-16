@@ -31,7 +31,7 @@ public class LocationsController : ControllerBase
     [Route("/SetLocationsForOrder")]
     public async Task<ActionResult> SetLocationsForOrder()
     {
-        await _locationService.SetOrderLocations();
+        await _locationService.SetPickingLocations();
 
         return Ok("Locations set successfully.");
     }

@@ -22,8 +22,8 @@ public class OrderService : IOrderService
     public async Task<List<Order>> QueryAllOrders()
         => await _context.Orders.ToListAsync();
 
-    private async Task<List<Order>> QueryOrdersByReplenishItemId(int itemId) =>
-        await _context.Orders
+    private async Task<List<PickingOrder>> QueryOrdersByReplenishItemId(int itemId) =>
+        await _context.PickOrders
             .Where(order => order.ReplenishedRequestedItems.Any(item => item.ItemId == itemId))
             .ToListAsync();
 
@@ -45,28 +45,31 @@ public class OrderService : IOrderService
         return order;
     }
 
-    public async Task<Order> SetPalette(string paletteId)
+    public async Task<PickingOrder> SetPalette(string paletteId)
     {
         var order = await _userContextService.QueryOngoingOrder();
-        var optionalPalette = await _paletteService.GetOptionalPaletteInProgress(paletteId, order.Id);
+        
+        if (order is not PickingOrder pickingOrder)
+            throw new ArgumentException("This is not a picking order.");
+        
+        var optionalPalette = await _paletteService.GetOptionalPaletteInProgress(paletteId, pickingOrder.Id);
         
         if (optionalPalette == null)
         {
             var palette = await _paletteService.CreatePalette(paletteId);
 
-            await SetPaletteToOrder(palette, order);
+            await SetPaletteToOrder(palette, pickingOrder);
         }
         else
         {
-            await SetPaletteToOrder(optionalPalette, order);
+            await SetPaletteToOrder(optionalPalette, pickingOrder);
         }
 
         await _context.SaveChangesAsync();
-
-        return order;
+        return pickingOrder;
     }
 
-    private async Task SetPaletteToOrder(Palette palette, Order order)
+    private async Task SetPaletteToOrder(Palette palette, PickingOrder order)
     {
         palette.OrderId = order.Id;
         order.SetOngoingPalette(palette);

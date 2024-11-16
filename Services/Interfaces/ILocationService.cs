@@ -7,5 +7,5 @@ public interface ILocationService
     Task<Location> QueryLocationById(int locationId);
     Task<Location> QueryNextLocation();
     void ScanLocation(int? expectedLocation, int locationId);
-    Task SetOrderLocations();
+    Task SetPickingLocations();
 }

@@ -97,7 +97,7 @@ public class UserService : IUserService
         user.ThrowIfHasOngoingOrder();
 
         var order = await _orderService.QueryOrderById(orderId);
-        order.ThrowIfCannotBeTaken();
+        order.ThrowIfInProgress();
 
         user.StartOrder(order);
         order.CurrentUserId = user.Id;

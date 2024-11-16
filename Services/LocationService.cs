@@ -47,45 +47,72 @@ public class LocationService : ILocationService, IReachService
         var initialLocation = QueryLocationById(request.InitialLocationId);
         var destinationLocation = QueryLocationById(request.DestinationLocationId);
         var item = await _itemService.QueryItemById(request.ItemId);
-        
-        
     }
 
-    public async Task SetOrderLocations()
+    public async Task SetPickingLocations()
     {
         var order = await _userContextService.QueryOngoingOrder();
 
+        if (order is not PickingOrder pickingOrder)
+            throw new ArgumentException("This is not a picking order.");
+
         var pickingLocationsQueue = await GetPickingLocationsQueue();
 
-        var orderLocations = order.Locations;
+        var orderLocations = pickingOrder.Locations;
 
         while (pickingLocationsQueue.Count > 0)
         {
             var nextLocation = pickingLocationsQueue.Dequeue();
 
             var nextLocationItem = nextLocation.Item;
-            var pickRequest = order.GetItemById(nextLocationItem.LocationId);
+            var pickRequest = pickingOrder.GetItemById(nextLocationItem.LocationId);
 
             if (pickRequest == null)
                 continue;
 
             if (!nextLocationItem.HasEnoughQuantityToPick(pickRequest.Quantity))
             {
-                order.AddReplenishItem(pickRequest);
-                _context.Orders.Update(order);
+                pickingOrder.AddReplenishItem(pickRequest);
+                _context.Orders.Update(pickingOrder);
             }
 
             orderLocations.Enqueue(nextLocation);
         }
 
-        _context.Orders.Update(order);
+        _context.Orders.Update(pickingOrder);
         await _context.SaveChangesAsync();
+    }
+
+    public async Task SetReachLocations() //TODO
+    {
+        var order = await _userContextService.QueryOngoingOrder();
+        
+        if (order is not ReachingOrder reachOrder)
+            throw new ArgumentException("This is not a reaching order.");
+        
     }
 
     public async Task<Location> QueryNextLocation()
     {
         var order = await _userContextService.QueryOngoingOrder();
+
+        return order switch
+        {
+            PickingOrder pickingOrder => await HandleNextPickingLocation(pickingOrder),
+            ReachingOrder reachingOrder => await HandleNextReachingLocation(reachingOrder),
+            _ => throw new ArgumentException("Unknown type of order.")
+        };
+    }
+
+    private async Task<Location> HandleNextReachingLocation(ReachingOrder reachingOrder)
+    {
+        throw new NotImplementedException();
+    }
+
+    private async Task<Location> HandleNextPickingLocation(PickingOrder order)
+    {
         var pickingLocationsQueue = order.Locations;
+
         var itemFound = false;
 
         var nextLocation = pickingLocationsQueue.Dequeue();
@@ -111,6 +138,7 @@ public class LocationService : ILocationService, IReachService
             {
                 order.AddReplenishItem(pickRequest);
                 _context.Orders.Update(order);
+                await _context.SaveChangesAsync();
             }
             else
                 itemFound = true;
@@ -118,7 +146,7 @@ public class LocationService : ILocationService, IReachService
 
         return nextLocation;
     }
-
+    
     private async Task<Queue<Location>> GetPickingLocationsQueue()
     {
         var dictionary = await QueryPickingLocations();

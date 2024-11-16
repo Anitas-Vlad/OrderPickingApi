@@ -25,6 +25,6 @@ public class OrdersController : ControllerBase
         => await _orderService.QueryOrderById(orderId);
 
     [HttpPatch]
-    public async Task<ActionResult<Order>> SetPalette(string paletteId)
+    public async Task<ActionResult<PickingOrder>> SetPalette(string paletteId)
         => await _orderService.SetPalette(paletteId);
 }
