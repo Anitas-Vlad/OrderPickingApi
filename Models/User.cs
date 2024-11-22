@@ -24,9 +24,9 @@ public class User
     public void StartOrder(Order order)
         => CurrentOrder = order;
 
-    public bool HasAdminRights()
-        => Roles.Any(role => role == UserRole.Admin);
-
-    public bool HasReacherRights()
-        => Roles.Any(role => role == UserRole.Reacher);
+    public bool HasRole(UserRole requiredRole)
+        => Roles.Any(role => role == requiredRole);
+    
+    public void AddRole(UserRole role)
+        => Roles.Add(role); //TODO Confirm that the user doesn't already have this role (in the implementation).
 }

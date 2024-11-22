@@ -23,7 +23,7 @@ public class OrderService : IOrderService
         => await _context.Orders.ToListAsync();
 
     private async Task<List<PickingOrder>> QueryOrdersByReplenishItemId(int itemId) =>
-        await _context.PickOrders
+        await _context.PickingOrders
             .Where(order => order.ReplenishedRequestedItems.Any(item => item.ItemId == itemId))
             .ToListAsync();
 
@@ -33,8 +33,11 @@ public class OrderService : IOrderService
 
         foreach (var order in orders)
         {
-            
+            order.UpdateAfterReplenishment(itemId);
+            _context.Orders.Update(order);
         }
+
+        await _context.SaveChangesAsync(); //TODO maybe this is not needed here, but where it'll be used
     }
 
     public async Task<Order> QueryOrderById(int orderId)
@@ -43,39 +46,5 @@ public class OrderService : IOrderService
         if (order == null)
             throw new ArgumentException("Order not found.");
         return order;
-    }
-
-    public async Task<PickingOrder> SetPalette(string paletteId)
-    {
-        var order = await _userContextService.QueryOngoingOrder();
-        
-        if (order is not PickingOrder pickingOrder)
-            throw new ArgumentException("This is not a picking order.");
-        
-        var optionalPalette = await _paletteService.GetOptionalPaletteInProgress(paletteId, pickingOrder.Id);
-        
-        if (optionalPalette == null)
-        {
-            var palette = await _paletteService.CreatePalette(paletteId);
-
-            await SetPaletteToOrder(palette, pickingOrder);
-        }
-        else
-        {
-            await SetPaletteToOrder(optionalPalette, pickingOrder);
-        }
-
-        await _context.SaveChangesAsync();
-        return pickingOrder;
-    }
-
-    private async Task SetPaletteToOrder(Palette palette, PickingOrder order)
-    {
-        palette.OrderId = order.Id;
-        order.SetOngoingPalette(palette);
-
-        _context.Orders.Update(order);
-        _context.Palettes.Update(palette);
-        await _context.SaveChangesAsync();
     }
 }

@@ -16,7 +16,7 @@ public class ItemsController : ControllerBase
     
     [HttpPost]
     [Route("/VerifyItem")]
-    public ActionResult VerifyLocation(int itemId)
+    public ActionResult VerifyItem(int itemId)
     {
         var expectedItemId = HttpContext.Session.GetInt32("ExpectedItemId");
         

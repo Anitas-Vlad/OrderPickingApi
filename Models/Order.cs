@@ -7,10 +7,9 @@ public class Order
 {
     public int Id { get; set; }
     [Required] public int? CurrentUserId { get; set; }
-
+    [Required] public UserRole NeededRole { get; set; }
     [Required] public OrderStatus OrderStatus { get; set; } = OrderStatus.Received; //TODO String.ValueOf() for DB
 
-    // public List<Palette> Palettes { get; set; }
     [Required] public string Destination { get; set; }
 
     [Required(ErrorMessage = "Mobile number is required.")]

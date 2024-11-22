@@ -10,4 +10,5 @@ public interface IUserService
     Task<List<User>> QueryAllUsers();
     Task<User> QueryUserByUsername(string username);
     Task<User> CreateUser(RegisterRequest request);
+    Task<User> TakeOrder(int orderId);
 }

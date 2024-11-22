@@ -36,3 +36,9 @@ TODO * Order branched out.
 TODO * Create Pick
 - After scanning to confirm the containerId, create pick.
 - Update everything related.
+
+TODO * PickingOrder.ReplenishRequests 
+- When the ready requests are completed, query -> order -> add to RequestedItems -> Enqueue
+
+TODO * Hangfire delete Unnecessary Unfinished picks from DB.
+ 

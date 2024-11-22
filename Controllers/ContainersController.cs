@@ -35,9 +35,9 @@ public class ContainersController : ControllerBase
 
     [HttpPost]
     [Route("/VerifyContainer/{containerId}")]
-    public ActionResult VerifyContainer(int containerId)
+    public ActionResult VerifyContainer(string containerId)
     {
-        var expectedContainerId = HttpContext.Session.GetInt32("OngoingContainerId");
+        var expectedContainerId = HttpContext.Session.GetString("OngoingContainerId");
 
         _containerService.ScanContainer(expectedContainerId, containerId);
         return Ok("Container verified successfully.");

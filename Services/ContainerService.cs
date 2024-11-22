@@ -51,14 +51,14 @@ public class ContainerService : IContainerService
 
         return container;
     }
-    
+
     public async Task<Container> SetContainer(string containerId)
     {
         var order = await _userContextService.QueryOngoingOrder();
-        
+
         if (order is not PickingOrder pickingOrder)
             throw new ArgumentException("This is not a picking order.");
-        
+
         var ongoingPalette = pickingOrder.OngoingPalette;
 
         if (ongoingPalette == null)
@@ -67,23 +67,24 @@ public class ContainerService : IContainerService
         var optionalContainer = await GetOptionalContainerInProgress(containerId, ongoingPalette.Id);
 
         if (optionalContainer != null)
-            return await SetContainerToPalette(ongoingPalette, optionalContainer);
+            return await SetContainerToPalette(pickingOrder, ongoingPalette, optionalContainer);
 
         var container = await CreateContainer(containerId);
 
-        return await SetContainerToPalette(ongoingPalette, container);
+        return await SetContainerToPalette(pickingOrder, ongoingPalette, container);
     }
 
-    public void ScanContainer(int? expectedContainerId, int containerId)
+    public void ScanContainer(string? expectedContainerId, string containerId)
     {
         if (expectedContainerId == null || expectedContainerId != containerId)
             throw new ArgumentException("Incorrect container scanned. Please verify and try again.");
     }
 
-    private async Task<Container> SetContainerToPalette(Palette palette, Container container)
+    private async Task<Container> SetContainerToPalette(PickingOrder order, Palette palette, Container container)
     {
         container.PaletteId = palette.Id;
         palette.SetContainer(container);
+        order.SetOngoingPickContainerId(container.Id);
 
         _context.Palettes.Update(palette);
         _context.Containers.Update(container);

@@ -6,7 +6,7 @@ using OrderPickingSystem.Services.Interfaces;
 
 namespace OrderPickingSystem.Controllers;
 
-// [Authorize(Roles = "Admin")]
+// [Authorize]
 [ApiController]
 [Route("[controller]")]
 public class UsersController : ControllerBase
@@ -29,4 +29,9 @@ public class UsersController : ControllerBase
     // [AllowAnonymous]
     public async Task<ActionResult<List<User>>> GetAllUsers()
         => await _userService.QueryAllUsers();
+
+    [HttpPatch]
+    [Route("/TakeOrder-{orderId}")]
+    public async Task<ActionResult<User>> TakeOrder(int orderId)
+        => await _userService.TakeOrder(orderId);
 }

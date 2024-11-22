@@ -30,7 +30,7 @@ public class UserService : IUserService
     }
 
     public async Task<bool> CheckIfUserHasAdminRights()
-        => (await _userContextService.QueryPersonalAccount()).HasAdminRights();
+        => (await _userContextService.QueryPersonalAccount()).HasRole(UserRole.Admin);
 
     public async Task<User> QueryUserById(int userId)
     {

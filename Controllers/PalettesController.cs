@@ -9,10 +9,12 @@ namespace OrderPickingSystem.Controllers;
 public class PalettesController : ControllerBase
 {
     private readonly IPaletteService _paletteService;
+    private readonly IOrderService _orderService;
 
-    public PalettesController(IPaletteService paletteService)
+    public PalettesController(IPaletteService paletteService, IOrderService orderService)
     {
         _paletteService = paletteService;
+        _orderService = orderService;
     }
 
     [HttpGet]
@@ -25,4 +27,8 @@ public class PalettesController : ControllerBase
 
         return palette;
     }
+    
+    [HttpPatch]
+    public async Task<ActionResult<Palette>> SetPalette(string paletteId)
+        => await _paletteService.SetPalette(paletteId);
 }

@@ -12,13 +12,15 @@ public class LocationService : ILocationService, IReachService
     private readonly OrderPickingContext _context;
     private readonly IUserContextService _userContextService;
     private readonly IItemService _itemService;
+    private readonly IPickService _pickService;
 
     public LocationService(OrderPickingContext context, IItemService itemService,
-        IUserContextService userContextService)
+        IUserContextService userContextService, IPickService pickService)
     {
         _context = context;
         _itemService = itemService;
         _userContextService = userContextService;
+        _pickService = pickService;
     }
 
     public async Task<Location> QueryLocationById(int locationId)
@@ -83,13 +85,38 @@ public class LocationService : ILocationService, IReachService
         await _context.SaveChangesAsync();
     }
 
+    public async Task PickFromLocation(Pick pick)
+    {
+        var location = await QueryLocationById(pick.LocationId);
+        if (location == null)
+            throw new ArgumentException("Invalid location.");
+
+        var item = location.Item;
+        
+        item.SubtractItem(pick.Quantity);
+
+        await _pickService.CompletePick();
+        
+        _context.Items.Update(item);
+        _context.Locations.Update(location);
+    }
+
+    public async Task SetReachingLocations()
+    {
+        var order = await _userContextService.QueryOngoingOrder();
+    }
+
     public async Task SetReachLocations() //TODO
     {
         var order = await _userContextService.QueryOngoingOrder();
-        
+
         if (order is not ReachingOrder reachOrder)
             throw new ArgumentException("This is not a reaching order.");
-        
+    }
+
+    public Task<Pick> PickFromLocation(CreatePickRequest request)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<Location> QueryNextLocation()
@@ -135,18 +162,20 @@ public class LocationService : ILocationService, IReachService
                 continue;
 
             if (!nextLocationItem.HasEnoughQuantityToPick(pickRequest.Quantity))
-            {
                 order.AddReplenishItem(pickRequest);
-                _context.Orders.Update(order);
-                await _context.SaveChangesAsync();
-            }
             else
+            {
                 itemFound = true;
+                order.SetOngoingPickLocationItemAndQuantity(nextLocation.Id, pickRequest.ItemId, pickRequest.Quantity);
+            }
         }
+
+        _context.Orders.Update(order);
+        await _context.SaveChangesAsync();
 
         return nextLocation;
     }
-    
+
     private async Task<Queue<Location>> GetPickingLocationsQueue()
     {
         var dictionary = await QueryPickingLocations();
@@ -173,7 +202,6 @@ public class LocationService : ILocationService, IReachService
         return locationsQueue;
     }
 
-    // These are all the locations from where the reach truckers have to take Items to replenish the Picking locations on the first floor.
     private async Task<SortedDictionary<int, List<Location>>> QueryReplenishLocations()
     {
         var locations = await _context.Locations.Where(location => location.Floor != 1)

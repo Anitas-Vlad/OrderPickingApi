@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OrderPickingSystem.Models;
+using OrderPickingSystem.Models.Requests;
 using OrderPickingSystem.Services.Interfaces;
 
 namespace OrderPickingSystem.Controllers;
@@ -19,4 +20,8 @@ public class PicksController : ControllerBase
     [Route("/picks-{orderId}")]
     public async Task<ActionResult<List<Pick>>> GetPicksByOrderId(int orderId)
         => await _pickService.QueryPicksByOrderId(orderId);
+
+    [HttpPatch]
+    public async Task CompletePick() => await _pickService.CompletePick();
+
 }
