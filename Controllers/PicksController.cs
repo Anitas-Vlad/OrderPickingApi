@@ -21,7 +21,12 @@ public class PicksController : ControllerBase
     public async Task<ActionResult<List<Pick>>> GetPicksByOrderId(int orderId)
         => await _pickService.QueryPicksByOrderId(orderId);
 
+    [HttpGet]
+    [Route("/picks-from-container-{containerId}")]
+    public async Task<ActionResult<List<Pick>>> GetPicksFromContainer(string containerId)
+        => await _pickService.QueryPicksByContainerId(containerId);
+    
     [HttpPatch]
-    public async Task CompletePick() => await _pickService.CompletePick();
-
+    public async Task CompletePick() 
+        => await _pickService.CompletePick();
 }

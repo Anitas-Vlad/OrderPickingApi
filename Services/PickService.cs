@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using OrderPickingSystem.Context;
 using OrderPickingSystem.Models;
@@ -13,14 +14,19 @@ public class PickService : IPickService
     private readonly IItemService _itemService;
     private readonly IUserContextService _userContextService;
     private readonly ILocationService _locationService;
+    private readonly IContainerService _containerService;
+    private readonly IOrderService _orderService;
     
+
     public PickService(OrderPickingContext context, IItemService itemService, IUserContextService userContextService,
-        ILocationService locationService)
+        ILocationService locationService, IContainerService containerService, IOrderService orderService)
     {
         _context = context;
         _itemService = itemService;
         _userContextService = userContextService;
         _locationService = locationService;
+        _containerService = containerService;
+        _orderService = orderService;
     }
 
     public async Task<Pick> CompletePick()
@@ -31,7 +37,7 @@ public class PickService : IPickService
         if (order is not PickingOrder pickingOrder) throw new ArgumentException("Invalid Order.");
 
         var user = await _userContextService.QueryPersonalAccount();
-        
+
         var pick = pickingOrder.OngoingPick;
         pick.UserId = user.Id;
         pick.DateTime = DateTime.Now;
@@ -46,12 +52,17 @@ public class PickService : IPickService
     public async Task<List<Pick>> QueryAllPicks()
         => await _context.Picks.ToListAsync();
 
-    public Task<List<Pick>> QueryPicksByContainerId(int containerId)
+    public async Task<List<Pick>> QueryPicksByContainerId(string containerId)
     {
-        throw new NotImplementedException();
+        var container = await _containerService.QueryContainerById(containerId);
+
+        if (container == null)
+            throw new ArgumentException("Container not found.");
+
+        return container.Picks;
     }
 
-    public Task<List<Pick>> QueryPicksByOrderId(int orderId)
+    public async Task<List<Pick>> QueryPicksByOrderId(int orderId)
     {
         throw new NotImplementedException();
     }

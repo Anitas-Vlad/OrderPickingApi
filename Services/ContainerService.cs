@@ -21,7 +21,9 @@ public class ContainerService : IContainerService
     }
 
     public async Task<Container?> QueryContainerById(string containerId)
-        => await _context.Containers.SingleOrDefaultAsync(container => container.Id == containerId);
+        => await _context.Containers
+            .Include(container => container.Picks)
+            .SingleOrDefaultAsync(container => container.Id == containerId);
 
     public async Task<Container> CreateContainer(string containerId)
     {

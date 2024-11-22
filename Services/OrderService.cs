@@ -19,8 +19,7 @@ public class OrderService : IOrderService
         _userContextService = userContextService;
     }
 
-    public async Task<List<Order>> QueryAllOrders() //TODO Override after breaking this service into Reach/Pick Service
-        => await _context.Orders.ToListAsync();
+    public async Task<List<Order>> QueryAllOrders() => await _context.Orders.ToListAsync();
 
     private async Task<List<PickingOrder>> QueryOrdersByReplenishItemId(int itemId) =>
         await _context.PickingOrders
@@ -42,7 +41,8 @@ public class OrderService : IOrderService
 
     public async Task<Order> QueryOrderById(int orderId)
     {
-        var order = await _context.Orders.SingleOrDefaultAsync(order => order.Id == orderId);
+        var order = await _context.Orders
+            .SingleOrDefaultAsync(order => order.Id == orderId);
         if (order == null)
             throw new ArgumentException("Order not found.");
         return order;
