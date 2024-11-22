@@ -7,7 +7,7 @@ using OrderPickingSystem.Services.Interfaces;
 
 namespace OrderPickingSystem.Services;
 
-public class LocationService : ILocationService, IReachService
+public class LocationService : ILocationService
 {
     private readonly OrderPickingContext _context;
     private readonly IUserContextService _userContextService;

@@ -27,6 +27,8 @@ public class PicksController : ControllerBase
         => await _pickService.QueryPicksByContainerId(containerId);
     
     [HttpPatch]
-    public async Task CompletePick() 
-        => await _pickService.CompletePick();
+    public async Task CompletePick()
+    {
+        await _pickService.CompletePick();
+    }
 }

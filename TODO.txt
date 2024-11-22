@@ -42,3 +42,6 @@ TODO * PickingOrder.ReplenishRequests
 
 TODO * Hangfire delete Unnecessary Unfinished picks from DB.
  
+TODO * Users Clocking in and out
+- The time is calculated between clockIns/Outs
+- Working time is divided by 15min so if you have worked 7h:12min, it's calculated as 7 working hours.

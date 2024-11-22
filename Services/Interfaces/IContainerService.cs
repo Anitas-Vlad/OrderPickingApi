@@ -9,4 +9,5 @@ public interface IContainerService
     Task<Container?> GetOptionalContainerInProgress(string containerId, string paletteId);
     Task<Container> SetContainer(string containerId);
     void ScanContainer(string? expectedContainerId, string containerId);
+    Task AddItemToContainer(Pick pick);
 }

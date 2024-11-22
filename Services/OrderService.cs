@@ -5,7 +5,7 @@ using OrderPickingSystem.Services.Interfaces;
 
 namespace OrderPickingSystem.Services;
 
-public class OrderService : IOrderService
+public class OrderService: IOrderService
 {
     private readonly OrderPickingContext _context;
     private readonly IPaletteService _paletteService;
@@ -21,30 +21,14 @@ public class OrderService : IOrderService
 
     public async Task<List<Order>> QueryAllOrders() => await _context.Orders.ToListAsync();
 
-    private async Task<List<PickingOrder>> QueryOrdersByReplenishItemId(int itemId) =>
-        await _context.PickingOrders
-            .Where(order => order.ReplenishedRequestedItems.Any(item => item.ItemId == itemId))
-            .ToListAsync();
-
-    public async void UpdateOrdersByReplenishedItemId(int itemId)
-    {
-        var orders = await QueryOrdersByReplenishItemId(itemId);
-
-        foreach (var order in orders)
-        {
-            order.UpdateAfterReplenishment(itemId);
-            _context.Orders.Update(order);
-        }
-
-        await _context.SaveChangesAsync(); //TODO maybe this is not needed here, but where it'll be used
-    }
-
     public async Task<Order> QueryOrderById(int orderId)
     {
         var order = await _context.Orders
             .SingleOrDefaultAsync(order => order.Id == orderId);
+        
         if (order == null)
             throw new ArgumentException("Order not found.");
+        
         return order;
     }
 }

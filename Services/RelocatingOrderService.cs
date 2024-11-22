@@ -3,9 +3,9 @@ using OrderPickingSystem.Services.Interfaces;
 
 namespace OrderPickingSystem.Services;
 
-public class RelocateOrderService : OrderService
+public class RelocatingOrderService : OrderService
 {
-    public RelocateOrderService(OrderPickingContext context, IPaletteService paletteService, 
+    public RelocatingOrderService(OrderPickingContext context, IPaletteService paletteService, 
         IUserContextService userContextService) : base(context, paletteService, userContextService)
     {
     }

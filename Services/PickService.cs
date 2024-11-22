@@ -43,6 +43,7 @@ public class PickService : IPickService
         pick.DateTime = DateTime.Now;
 
         await _locationService.PickFromLocation(pick);
+        await _containerService.AddItemToContainer(pick);
 
         _context.Picks.Update(pick);
         await _context.SaveChangesAsync();

@@ -5,7 +5,7 @@ using OrderPickingSystem.Services.Interfaces;
 
 namespace OrderPickingSystem.Services;
 
-public class PickingOrderService : OrderService
+public class PickingOrderService : OrderService, IPickingOrderService
 {
     private readonly OrderPickingContext _context;
     private readonly IPaletteService _paletteService;

@@ -12,12 +12,15 @@ public class ContainerService : IContainerService
     private readonly OrderPickingContext _context;
     private static Regex _containerIdPattern;
     private readonly IUserContextService _userContextService;
+    private readonly ILocationService _locationService;
 
-    public ContainerService(OrderPickingContext context, IUserContextService userContextService)
+    public ContainerService(OrderPickingContext context, IUserContextService userContextService,
+        ILocationService locationService)
     {
         _context = context;
         _containerIdPattern = new(@"^cont\d{12}$");
         _userContextService = userContextService;
+        _locationService = locationService;
     }
 
     public async Task<Container?> QueryContainerById(string containerId)
@@ -38,11 +41,6 @@ public class ContainerService : IContainerService
         return container;
     }
 
-    private void MatchesContainerIdPattern(string containerId)
-    {
-        if (!_containerIdPattern.IsMatch(containerId))
-            throw new ArgumentException("Invalid Container Id.");
-    }
 
     public async Task<Container?> GetOptionalContainerInProgress(string containerId, string paletteId)
     {
@@ -94,9 +92,22 @@ public class ContainerService : IContainerService
         return container;
     }
 
+    private void MatchesContainerIdPattern(string containerId)
+    {
+        if (!_containerIdPattern.IsMatch(containerId))
+            throw new ArgumentException("Invalid Container Id.");
+    }
+
     //TODO Integrate all Item updates. Location/Stock
-    // public async Task AddItemToContainer(int containerId, Item item)
-    // {
-    //     var container = await QueryContainerById(containerId);
-    // }
+    public async Task AddItemToContainer(Pick pick)
+    {
+        var container = await QueryContainerById(pick.ContainerId);
+        
+        if (container == null)
+            throw new ArgumentException("Invalid Container.");
+        
+        container.Picks.Add(pick);
+        
+        _context.Containers.Update(container);
+    }
 }
