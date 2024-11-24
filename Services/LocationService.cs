@@ -88,14 +88,13 @@ public class LocationService : ILocationService
     public async Task PickFromLocation(Pick pick)
     {
         var location = await QueryLocationById(pick.LocationId);
+        
         if (location == null)
             throw new ArgumentException("Invalid location.");
 
         var item = location.Item;
         
         item.SubtractItem(pick.Quantity);
-
-        await _pickService.CompletePick();
         
         _context.Items.Update(item);
         _context.Locations.Update(location);

@@ -12,9 +12,8 @@ public class Location
     [Required] public int Floor { get; set; }
     public Item Item { get; set; }
 
-    public int GetItemQuantity() => Item.Quantity;
-    public bool HasEnoughItemQuantity(int requestedQuantity) 
-        => GetItemQuantity() >= requestedQuantity;
+    public bool HasEnoughItemQuantity(int requestedQuantity)
+        => Item.Quantity >= requestedQuantity;
 
     public int GetItemId() => Id;
 }
