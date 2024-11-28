@@ -26,11 +26,16 @@ builder.Services.AddDbContext<OrderPickingContext>(options =>
 // }
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IContainerService, ContainerService>();
 builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IPaletteService, PaletteService>();
+builder.Services.AddScoped<IPickingOrderService, PickingOrderService>();
 builder.Services.AddScoped<IPickService, PickService>();
+builder.Services.AddScoped<IReachingOrderService, ReachingOrderService>();
+builder.Services.AddScoped<IRelocatingOrderService, RelocatingOrderService>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<IUserMapper, UserMapper>();
 builder.Services.AddScoped<IUserService, UserService>();
