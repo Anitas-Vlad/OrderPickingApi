@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderPickingSystem.Models;
 using OrderPickingSystem.Models.Enums;
+using OrderPickingSystem.Models.Orders;
 
 namespace OrderPickingSystem.Context;
 

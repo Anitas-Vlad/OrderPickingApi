@@ -1,4 +1,5 @@
 using OrderPickingSystem.Models;
+using OrderPickingSystem.Models.Orders;
 
 namespace OrderPickingSystem.Services.Interfaces;
 

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OrderPickingSystem.Context;
 using OrderPickingSystem.Models;
+using OrderPickingSystem.Models.Orders;
 using OrderPickingSystem.Models.Requests;
 using OrderPickingSystem.Services.Interfaces;
 

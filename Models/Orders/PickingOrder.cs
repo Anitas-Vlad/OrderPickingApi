@@ -1,10 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using OrderPickingSystem.Models.Enums;
 
-namespace OrderPickingSystem.Models;
+namespace OrderPickingSystem.Models.Orders;
 
 public class PickingOrder : Order
 {
+    public PickingOrder()
+    {
+        RequiredRole = UserRole.Picker;
+    }
+
     public List<Palette> Palettes { get; set; }
     public Palette? OngoingPalette { get; set; }
     public List<Pick> Picks { get; set; }

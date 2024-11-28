@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using OrderPickingSystem.Models.Enums;
 
-namespace OrderPickingSystem.Models;
+namespace OrderPickingSystem.Models.Orders;
 
 public class Order
 {

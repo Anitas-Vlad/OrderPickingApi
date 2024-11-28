@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using OrderPickingSystem.Models.Enums;
+using OrderPickingSystem.Models.Orders;
 
 namespace OrderPickingSystem.Models;
 
