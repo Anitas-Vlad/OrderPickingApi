@@ -78,6 +78,33 @@ public class UserService : IUserService
         return user;
     }
 
+    public async Task<User> AddUserRole(int userId, UserRole role)
+    {
+        var user = await QueryUserById(userId);
+        if (user.Roles.Contains(role))
+            throw new ArgumentException("Role already exists.");
+
+        user.Roles.Add(role);
+
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+
+        return user;
+    }
+
+    public async Task<User> RemoveUserRole(int userId, UserRole role)
+    {
+        var user = await QueryUserById(userId);
+        if (!user.Roles.Contains(role))
+            throw new ArgumentException("User does not have this role.");
+
+        user.Roles.Remove(role);
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+
+        return user;
+    }
+
     private async Task IsUsernameValid(string username) //TODO Admin
     {
         if (await _context.Users.AnyAsync(user => user.Username == username))

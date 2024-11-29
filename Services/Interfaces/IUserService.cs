@@ -1,4 +1,5 @@
 ﻿using OrderPickingSystem.Models;
+using OrderPickingSystem.Models.Enums;
 using OrderPickingSystem.Models.Requests;
 using OrderPickingSystem.Models.Responses;
 
@@ -11,4 +12,6 @@ public interface IUserService
     Task<User> QueryUserByUsername(string username);
     Task<User> CreateUser(RegisterRequest request);
     Task<User> TakeOrder(int orderId);
+    Task<User> AddUserRole(int userId, UserRole role);
+    Task<User> RemoveUserRole(int userId, UserRole role);
 }

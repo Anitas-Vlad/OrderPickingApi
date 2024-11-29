@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using OrderPickingSystem.Models;
+using OrderPickingSystem.Models.Enums;
 using OrderPickingSystem.Services.Interfaces;
 
 namespace OrderPickingSystem.Controllers;
@@ -34,4 +35,14 @@ public class UsersController : ControllerBase
     [Route("/TakeOrder-{orderId}")]
     public async Task<ActionResult<User>> TakeOrder(int orderId)
         => await _userService.TakeOrder(orderId);
+    
+    [HttpPatch]
+    [Route("/AddUserRole/User-{userId}/Role-{role}")]
+    public async Task<User> AddRoleToUser(int userId, UserRole role)
+        => await _userService.AddUserRole(userId, role);
+    
+    [HttpPatch]
+    [Route("/RemoveUserRole/User-{userId}/Role-{role}")]
+    public async Task<User> RemoveUserRole(int userId, UserRole role)
+        => await _userService.RemoveUserRole(userId, role);
 }
