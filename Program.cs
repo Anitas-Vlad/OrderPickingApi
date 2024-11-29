@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -43,9 +44,29 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthorization(options =>
     {
-        options.AddPolicy("ADMIN", policy => policy.RequireRole(UserRole.Admin.ToString().ToUpperInvariant()));
-        options.AddPolicy("WORKER", policy => policy.RequireRole(UserRole.Picker.ToString().ToUpperInvariant()));
-        options.AddPolicy("ADMINANDWORKER", policy => policy.RequireRole(UserRole.Picker.ToString(), UserRole.Admin.ToString().ToUpperInvariant()));
+        options.AddPolicy("Picker", policy =>
+            policy.RequireAssertion(context =>
+                context.User.HasClaim(claim => claim is { Type: ClaimTypes.Role, Value: "Picker" })
+            )
+        );
+        options.AddPolicy("Reacher", policy =>
+            policy.RequireAssertion(context =>
+                context.User.HasClaim(claim => claim is { Type: ClaimTypes.Role, Value: "Reacher" })
+            )
+        );
+        options.AddPolicy("Admin", policy =>
+            policy.RequireAssertion(context =>
+                context.User.HasClaim(claim => claim is { Type: ClaimTypes.Role, Value: "Admin" })
+            )
+        );
+        options.AddPolicy("Relocator", policy =>
+            policy.RequireAssertion(context =>
+                context.User.HasClaim(claim => claim is { Type: ClaimTypes.Role, Value: "Relocator" })
+            )
+        );
+        // options.AddPolicy("ADMIN", policy => policy.RequireRole(UserRole.Admin.ToString().ToUpperInvariant()));
+        // options.AddPolicy("WORKER", policy => policy.RequireRole(UserRole.Picker.ToString().ToUpperInvariant()));
+        // options.AddPolicy("ADMINANDWORKER", policy => policy.RequireRole(UserRole.Picker.ToString(), UserRole.Admin.ToString().ToUpperInvariant()));
     }
 );
 

@@ -24,9 +24,12 @@ public class JwtService : IJwtService
             new(ClaimTypes.Name, user.Username),
             new(ClaimTypes.NameIdentifier, user.Id.ToString())
         };
+        
+        claims.AddRange(user.Roles.Select(role => 
+            new Claim(ClaimTypes.Role, role.ToString())));
 
-        claims.AddRange(user.Roles.Select(role =>
-            new Claim(ClaimTypes.Role, Enum.GetName(typeof(UserRole), role)!.ToUpperInvariant())));
+        // claims.AddRange(user.Roles.Select(role =>
+        //     new Claim(ClaimTypes.Role, Enum.GetName(typeof(UserRole), role)!.ToUpperInvariant())));
 
         Console.WriteLine("Token was created with claims: " + claims);
 
