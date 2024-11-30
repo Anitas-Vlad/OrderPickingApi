@@ -13,15 +13,13 @@ public class LocationService : ILocationService
     private readonly OrderPickingContext _context;
     private readonly IUserContextService _userContextService;
     private readonly IItemService _itemService;
-    private readonly IPickService _pickService;
 
     public LocationService(OrderPickingContext context, IItemService itemService,
-        IUserContextService userContextService, IPickService pickService)
+        IUserContextService userContextService)
     {
         _context = context;
         _itemService = itemService;
         _userContextService = userContextService;
-        _pickService = pickService;
     }
 
     public async Task<Location> QueryLocationById(int locationId)

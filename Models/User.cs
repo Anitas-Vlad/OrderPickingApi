@@ -10,7 +10,8 @@ public class User
     public int Id { get; set; }
     [Required] public string Username { get; set; } // TODO Replace Email with Username in JWT
     [Required] public string PasswordHash { get; set; }
-    [Required] public List<UserRole> Roles { get; set; }
+    // public List<UserRole> Roles { get; set; } = new List<UserRole>();
+    public List<UserRoleMapping> UserRoles { get; set; }
     public Order? CurrentOrder { get; set; }
 
     public void ThrowIfHasOngoingOrder()
@@ -25,9 +26,20 @@ public class User
     public void StartOrder(Order order)
         => CurrentOrder = order;
 
-    public bool HasRole(UserRole requiredRole)
-        => Roles.Any(role => role == requiredRole);
+    public List<UserRole> GetRoles() 
+        => UserRoles.Select(urm => urm.Role).ToList();
     
-    public void AddRole(UserRole role)
-        => Roles.Add(role); //TODO Confirm that the user doesn't already have this role (in the implementation).
+    public bool HasRole(UserRole requiredRole)
+        => UserRoles.Any(urm => urm.Role == requiredRole);
+    
+    public void AddRole(UserRoleMapping role)
+        => UserRoles.Add(role);
+
+    public void RemoveRole(UserRoleMapping role) 
+        => UserRoles.Remove(role);
+
+    public UserRoleMapping? GetUserRoleMapping(UserRole userRole)
+    {
+        return UserRoles.FirstOrDefault(urm => urm.Role == userRole);
+    }
 }

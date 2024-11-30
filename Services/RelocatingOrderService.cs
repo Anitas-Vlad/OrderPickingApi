@@ -5,8 +5,8 @@ namespace OrderPickingSystem.Services;
 
 public class RelocatingOrderService : OrderService, IRelocatingOrderService
 {
-    public RelocatingOrderService(OrderPickingContext context, IPaletteService paletteService, 
-        IUserContextService userContextService) : base(context, paletteService, userContextService)
+    public RelocatingOrderService(OrderPickingContext context,
+        IUserContextService userContextService) : base(context, userContextService)
     {
     }
 }

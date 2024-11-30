@@ -25,8 +25,8 @@ public class JwtService : IJwtService
             new(ClaimTypes.NameIdentifier, user.Id.ToString())
         };
         
-        claims.AddRange(user.Roles.Select(role => 
-            new Claim(ClaimTypes.Role, role.ToString())));
+        claims.AddRange(user.UserRoles.Select(urm => 
+            new Claim(ClaimTypes.Role, urm.Role.ToString())));
 
         // claims.AddRange(user.Roles.Select(role =>
         //     new Claim(ClaimTypes.Role, Enum.GetName(typeof(UserRole), role)!.ToUpperInvariant())));

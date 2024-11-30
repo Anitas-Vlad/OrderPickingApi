@@ -12,7 +12,7 @@ public class ReachingOrderService : OrderService, IReachingOrderService
     private readonly IPaletteService _paletteService;
     private readonly IUserContextService _userContextService;
     
-    public ReachingOrderService(OrderPickingContext context, IPaletteService paletteService, IUserContextService userContextService) : base(context, paletteService, userContextService)
+    public ReachingOrderService(OrderPickingContext context, IPaletteService paletteService, IUserContextService userContextService) : base(context, userContextService)
     {
         _context = context;
         _paletteService = paletteService;

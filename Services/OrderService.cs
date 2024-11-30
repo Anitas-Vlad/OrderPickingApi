@@ -9,14 +9,12 @@ namespace OrderPickingSystem.Services;
 public class OrderService: IOrderService
 {
     private readonly OrderPickingContext _context;
-    private readonly IPaletteService _paletteService;
     private readonly IUserContextService _userContextService;
 
-    public OrderService(OrderPickingContext context, IPaletteService paletteService,
+    public OrderService(OrderPickingContext context,
         IUserContextService userContextService)
     {
         _context = context;
-        _paletteService = paletteService;
         _userContextService = userContextService;
     }
 

@@ -13,7 +13,7 @@ public class PickingOrderService : OrderService, IPickingOrderService
     private readonly IUserContextService _userContextService;
     
     public PickingOrderService(OrderPickingContext context, IPaletteService paletteService,
-        IUserContextService userContextService) : base(context, paletteService, userContextService)
+        IUserContextService userContextService) : base(context, userContextService)
     {
         _context = context;
         _paletteService = paletteService;

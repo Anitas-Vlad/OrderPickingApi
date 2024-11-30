@@ -17,9 +17,10 @@ public class UserService : IUserService
     private readonly IUserContextService _userContextService;
     private readonly IOrderService _orderService;
     private readonly IUserMapper _userMapper;
+    private readonly IUserRoleMappingService _userRoleMappingService;
 
     public UserService(OrderPickingContext context, IOrderService orderService, IUserContextService userContextService,
-        IUserMapper userMapper)
+        IUserMapper userMapper, IUserRoleMappingService roleMappingService)
     {
         _context = context;
         _mailPattern = new("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
@@ -27,9 +28,10 @@ public class UserService : IUserService
         _userContextService = userContextService;
         _userMapper = userMapper;
         _orderService = orderService;
+        _userRoleMappingService = roleMappingService;
     }
 
-    public async Task<bool> CheckIfUserHasAdminRights()
+    public async Task<bool> CheckIfUserHasAdminRights() // TODO Can be delete
         => (await _userContextService.QueryPersonalAccount()).HasRole(UserRole.Admin);
 
     public async Task<User> QueryUserById(int userId)
@@ -81,10 +83,12 @@ public class UserService : IUserService
     public async Task<User> AddUserRole(int userId, UserRole role)
     {
         var user = await QueryUserById(userId);
-        if (user.Roles.Contains(role))
+        if (user.HasRole(role))
             throw new ArgumentException("Role already exists.");
 
-        user.Roles.Add(role);
+        var userRoleMapping = _userRoleMappingService.CreateUserRoleMapping(userId, role);
+
+        user.AddRole(userRoleMapping);
 
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
@@ -95,11 +99,17 @@ public class UserService : IUserService
     public async Task<User> RemoveUserRole(int userId, UserRole role)
     {
         var user = await QueryUserById(userId);
-        if (!user.Roles.Contains(role))
+
+        var urm = user.GetUserRoleMapping(role);
+
+        if (urm == null)
             throw new ArgumentException("User does not have this role.");
 
-        user.Roles.Remove(role);
+        user.RemoveRole(urm);
+
+        _context.UserRoleMappings.Remove(urm);
         _context.Users.Update(user);
+        
         await _context.SaveChangesAsync();
 
         return user;

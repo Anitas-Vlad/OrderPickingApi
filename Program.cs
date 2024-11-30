@@ -40,6 +40,7 @@ builder.Services.AddScoped<IRelocatingOrderService, RelocatingOrderService>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<IUserMapper, UserMapper>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRoleMappingService, UserRoleMappingService>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthorization(options =>
@@ -91,6 +92,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddControllers();
 
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     // Optional: Set the session timeout period; 20 minutes is the default.
