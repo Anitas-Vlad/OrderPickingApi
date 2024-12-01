@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderPickingSystem.Context;
-using OrderPickingSystem.Models;
 using OrderPickingSystem.Models.Orders;
 using OrderPickingSystem.Services.Interfaces;
 
-namespace OrderPickingSystem.Services;
+namespace OrderPickingSystem.Services.OrderServices;
 
 public class OrderService: IOrderService
 {

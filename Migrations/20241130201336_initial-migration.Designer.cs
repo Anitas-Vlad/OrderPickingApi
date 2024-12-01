@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderPickingSystem.Context;
 
@@ -11,9 +12,11 @@ using OrderPickingSystem.Context;
 namespace OrderPickingSystem.Migrations
 {
     [DbContext(typeof(OrderPickingContext))]
-    partial class OrderPickingContextModelSnapshot : ModelSnapshot
+    [Migration("20241130201336_initial-migration")]
+    partial class initialmigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -316,20 +319,6 @@ namespace OrderPickingSystem.Migrations
                     b.HasIndex("CurrentOrderId");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1000,
-                            PasswordHash = "$2a$11$RfwwHJPVyQY6iC.JVefNZ.QVU/4UEVrEYpLZuu3A6nbQCj8b.QUkS",
-                            Username = "Vlad"
-                        },
-                        new
-                        {
-                            Id = 1001,
-                            PasswordHash = "$2a$11$gzPgmFLRvQS7UPHj.SyCGujRYji0EZqi2Mc1QuujtmiWUTIW0RNlG",
-                            Username = "Alex"
-                        });
                 });
 
             modelBuilder.Entity("OrderPickingSystem.Models.UserRoleMapping", b =>
@@ -343,23 +332,6 @@ namespace OrderPickingSystem.Migrations
                     b.HasKey("UserId", "Role");
 
                     b.ToTable("UserRoleMappings");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = 1000,
-                            Role = 1
-                        },
-                        new
-                        {
-                            UserId = 1000,
-                            Role = 2
-                        },
-                        new
-                        {
-                            UserId = 1001,
-                            Role = 1
-                        });
                 });
 
             modelBuilder.Entity("OrderPickingSystem.Models.Orders.PickingOrder", b =>

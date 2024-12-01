@@ -42,12 +42,14 @@ public class LocationService : ILocationService
         return location;
     }
 
-    public async void RelocateItem(RelocateItemRequest request)
+    public async Task RelocateItem(RelocateItemRequest request)
     {
         var location = await QueryReachLocationByItemId(request.ItemId);
-        var initialLocation = QueryLocationById(request.InitialLocationId);
-        var destinationLocation = QueryLocationById(request.DestinationLocationId);
+        var initialLocation = await QueryLocationById(request.InitialLocationId);
+        var destinationLocation = await QueryLocationById(request.DestinationLocationId);
         var item = await _itemService.QueryItemById(request.ItemId);
+        
+        
     }
 
     public async Task SetPickingLocations()

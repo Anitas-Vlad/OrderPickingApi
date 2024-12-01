@@ -12,22 +12,18 @@ namespace OrderPickingSystem.Services;
 public class PickService : IPickService
 {
     private readonly OrderPickingContext _context;
-    private readonly IItemService _itemService;
     private readonly IUserContextService _userContextService;
     private readonly ILocationService _locationService;
     private readonly IContainerService _containerService;
-    private readonly IOrderService _orderService;
-    
 
-    public PickService(OrderPickingContext context, IItemService itemService, IUserContextService userContextService,
-        ILocationService locationService, IContainerService containerService, IOrderService orderService)
+
+    public PickService(OrderPickingContext context, IUserContextService userContextService,
+        ILocationService locationService, IContainerService containerService)
     {
         _context = context;
-        _itemService = itemService;
         _userContextService = userContextService;
         _locationService = locationService;
         _containerService = containerService;
-        _orderService = orderService;
     }
 
     public async Task<Pick> CompletePick()
@@ -42,6 +38,7 @@ public class PickService : IPickService
         var pick = pickingOrder.OngoingPick;
         pick.UserId = user.Id;
         pick.DateTime = DateTime.Now;
+        pick.OrderId = pickingOrder.Id;
 
         await _locationService.PickFromLocation(pick);
         await _containerService.AddItemToContainer(pick);
@@ -64,10 +61,11 @@ public class PickService : IPickService
         return container.Picks;
     }
 
-    public async Task<List<Pick>> QueryPicksByOrderId(int orderId)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<List<Pick>> QueryPicksByOrderId(int orderId) =>
+        await _context.Picks
+            .Where(pick => pick.OrderId == orderId)
+            .OrderBy(pick => pick.DateTime)
+            .ToListAsync();
 
     public async Task CreatePick(string paletteId)
     {

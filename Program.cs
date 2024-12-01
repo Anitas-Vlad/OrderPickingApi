@@ -9,6 +9,7 @@ using OrderPickingSystem.Models.Enums;
 using OrderPickingSystem.Services;
 using OrderPickingSystem.Services.Interfaces;
 using OrderPickingSystem.Services.Mappers;
+using OrderPickingSystem.Services.OrderServices;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -6,6 +6,7 @@ public class Pick
 {
     public int Id { get; set; }
     [Required] public int UserId { get; set; }
+    [Required] public int OrderId { get; set; } //TODO
     [Required] public string PaletteId { get; set; }
     [Required] public string ContainerId { get; set; }
     [Required] public int LocationId { get; set; }
