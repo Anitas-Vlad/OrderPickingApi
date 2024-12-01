@@ -4,6 +4,7 @@ using OrderPickingSystem.Context;
 using OrderPickingSystem.Models;
 using OrderPickingSystem.Models.Orders;
 using OrderPickingSystem.Models.Requests;
+using OrderPickingSystem.Models.TaskRequests;
 using OrderPickingSystem.Services.Interfaces;
 
 namespace OrderPickingSystem.Services;
@@ -44,10 +45,10 @@ public class LocationService : ILocationService
 
     public async Task RelocateItem(RelocateItemRequest request)
     {
-        var location = await QueryReachLocationByItemId(request.ItemId);
-        var initialLocation = await QueryLocationById(request.InitialLocationId);
-        var destinationLocation = await QueryLocationById(request.DestinationLocationId);
-        var item = await _itemService.QueryItemById(request.ItemId);
+        // var location = await QueryReachLocationByItemId(request.ItemId);
+        // var initialLocation = await QueryLocationById(request.InitialLocationId);
+        // var destinationLocation = await QueryLocationById(request.DestinationLocationId);
+        // var item = await _itemService.QueryItemById(request.ItemId);
         
         
     }

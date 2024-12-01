@@ -14,12 +14,6 @@ public class User
     public List<UserRoleMapping> UserRoles { get; set; }
     public Order? CurrentOrder { get; set; }
 
-    public void ThrowIfHasOngoingOrder()
-    {
-        if (CurrentOrder != null)
-            throw new ArgumentException("You currently have an ongoing order.");
-    }
-
     public void LeaveCurrentOrder()
         => CurrentOrder = null;
 
@@ -29,9 +23,9 @@ public class User
     public List<UserRole> GetRoles() 
         => UserRoles.Select(urm => urm.Role).ToList();
     
-    public bool HasRole(UserRole requiredRole)
+    public bool HasRole(UserRole requiredRole) 
         => UserRoles.Any(urm => urm.Role == requiredRole);
-    
+
     public void AddRole(UserRoleMapping role)
         => UserRoles.Add(role);
 

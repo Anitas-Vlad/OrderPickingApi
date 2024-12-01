@@ -1,4 +1,4 @@
-﻿namespace OrderPickingSystem.Models;
+﻿namespace OrderPickingSystem.Models.TaskRequests;
 
 public class RelocateItemRequest
 {

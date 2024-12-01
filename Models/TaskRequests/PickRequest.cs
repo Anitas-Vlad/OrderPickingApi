@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using OrderPickingSystem.Models.Orders;
-
-namespace OrderPickingSystem.Models;
+﻿namespace OrderPickingSystem.Models.TaskRequests;
 
 public class PickRequest
 {

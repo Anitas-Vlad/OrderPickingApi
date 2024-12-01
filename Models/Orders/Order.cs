@@ -16,9 +16,12 @@ public class Order
     [Phone(ErrorMessage = "Please enter a valid number.")]
     public string ContactNumber { get; set; }
 
-    public void ThrowIfInProgress()
+    protected void ThrowIfInProgress()
     {
-        if (OrderStatus == OrderStatus.InProcess)
+        if (OrderStatus == OrderStatus.InProgress)
             throw new ArgumentException("This order is taken by another worker.");
     }
+    
+    public bool IsInProgress() //TODO delete or refactor
+        => OrderStatus == OrderStatus.InProgress;
 }

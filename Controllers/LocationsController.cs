@@ -28,8 +28,17 @@ public class LocationsController : ControllerBase
     }
 
     [HttpPatch]
-    [Route("/SetLocationsForOrder")]
-    public async Task<ActionResult> SetLocationsForOrder()
+    [Route("/SetLocationsForPickingOrder")]
+    public async Task<ActionResult> SetLocationsForPickingOrder()
+    {
+        await _locationService.SetPickingLocations();
+
+        return Ok("Locations set successfully.");
+    }
+    
+    [HttpPatch]
+    [Route("/SetLocationsForReachingOrder")]
+    public async Task<ActionResult> SetLocationsForReachingOrder()
     {
         await _locationService.SetPickingLocations();
 

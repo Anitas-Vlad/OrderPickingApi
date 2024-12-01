@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using OrderPickingSystem.Models.Enums;
+using OrderPickingSystem.Models.TaskRequests;
 
 namespace OrderPickingSystem.Models.Orders;
 
@@ -47,7 +48,7 @@ public class PickingOrder : Order
         else OngoingPalette = palette;
     }
 
-    public void ThrowIfCannotBeTaken()
+    public void ThrowIfCannotBeTaken() //TODO delete or refactor
     {
         ThrowIfInProgress();
         if (!RequestedItems.Any() || !ReplenishedRequestedItems.Any())

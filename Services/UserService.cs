@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OrderPickingSystem.Context;
 using OrderPickingSystem.Models;
 using OrderPickingSystem.Models.Enums;
+using OrderPickingSystem.Models.Orders;
 using OrderPickingSystem.Models.Requests;
 using OrderPickingSystem.Models.Responses;
 using OrderPickingSystem.Services.Interfaces;
@@ -30,9 +31,6 @@ public class UserService : IUserService
         _orderService = orderService;
         _userRoleMappingService = roleMappingService;
     }
-
-    public async Task<bool> CheckIfUserHasAdminRights() // TODO Can be delete
-        => (await _userContextService.QueryPersonalAccount()).HasRole(UserRole.Admin);
 
     public async Task<User> QueryUserById(int userId)
     {
@@ -109,7 +107,7 @@ public class UserService : IUserService
 
         _context.UserRoleMappings.Remove(urm);
         _context.Users.Update(user);
-        
+
         await _context.SaveChangesAsync();
 
         return user;
@@ -128,22 +126,28 @@ public class UserService : IUserService
                 "Password must contain special characters, numbers, capital letters and be longer than 8 characters.");
     }
 
-    public async Task<User> TakeOrder(int orderId)
+    public async Task<Order> TakeOrder(int orderId)
     {
         var user = await _userContextService.QueryPersonalAccount();
-        user.ThrowIfHasOngoingOrder();
+        if (user.CurrentOrder != null)
+            throw new ArgumentException("You currently have an ongoing order.");
 
         var order = await _orderService.QueryOrderById(orderId);
-        order.ThrowIfInProgress();
-
+        if (order.OrderStatus == OrderStatus.InProgress)
+            throw new ArgumentException("This order is taken by another worker.");
+                
+        if (!user.HasRole(order.RequiredRole))
+            throw new ArgumentException("This user does not have the required role.");
+        
         user.StartOrder(order);
         order.CurrentUserId = user.Id;
-        order.OrderStatus = OrderStatus.Picking;
-
+        order.OrderStatus = OrderStatus.InProgress;
+        
         _context.Orders.Update(order);
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
 
-        return user;
+        
+        return order;
     }
 }
