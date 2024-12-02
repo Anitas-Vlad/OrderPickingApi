@@ -46,6 +46,7 @@ public class UserService : IUserService
     public async Task<User> QueryUserByUsername(string username)
     {
         var user = await _context.Users
+            .Include(user => user.UserRoles)
             .Where(user => user.Username == username)
             .FirstOrDefaultAsync();
 
