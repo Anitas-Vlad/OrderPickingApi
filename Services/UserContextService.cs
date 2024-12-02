@@ -36,6 +36,7 @@ public class UserContextService : IUserContextService
 
         var user = await _context.Users
             .Where(user => user.Id == userId)
+            .Include(user => user.UserRoles)
             .Include(user => user.CurrentOrder) //TODO may need to include every(needed) info from order
             .FirstOrDefaultAsync();
 

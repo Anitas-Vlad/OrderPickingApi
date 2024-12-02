@@ -29,7 +29,6 @@ public class UsersController : ControllerBase
         => await _userContextService.QueryPersonalAccount();
 
     [HttpGet]
-    // [AllowAnonymous]
     public async Task<ActionResult<List<User>>> GetAllUsers()
         => await _userService.QueryAllUsers();
 
@@ -49,14 +48,4 @@ public class UsersController : ControllerBase
 
         return order;
     }
-
-    [HttpPut]
-    [Route("/AddUserRole/User-{userId}/Role-{role}")]
-    public async Task<User> AddRoleToUser(int userId, UserRole role)
-        => await _userService.AddUserRole(userId, role);
-
-    [HttpDelete]
-    [Route("/RemoveUserRole/User-{userId}/Role-{role}")]
-    public async Task<User> RemoveUserRole(int userId, UserRole role)
-        => await _userService.RemoveUserRole(userId, role);
 }

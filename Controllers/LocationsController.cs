@@ -54,10 +54,4 @@ public class LocationsController : ControllerBase
         _locationService.ScanLocation(expectedLocationId, locationId);
         return Ok("Location verified successfully.");
     }
-
-    [HttpGet]
-    [Route("/{locationId}")]
-    public async Task<Location> GetLocationById(int locationId)
-        => await _locationService.QueryLocationById(locationId);
-    
 }

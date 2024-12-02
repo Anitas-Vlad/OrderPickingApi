@@ -35,6 +35,7 @@ public class UserService : IUserService
     public async Task<User> QueryUserById(int userId)
     {
         var user = await _context.Users
+            .Include(user => user.UserRoles)
             .Where(user => user.Id == userId)
             .FirstOrDefaultAsync();
 
@@ -58,6 +59,7 @@ public class UserService : IUserService
 
     public async Task<List<User>> QueryAllUsers() => //TODO Admin
         await _context.Users
+            .Include(user => user.UserRoles)
             .ToListAsync();
 
     public async Task<User> CreateUser(RegisterRequest request) //TODO Admin
@@ -147,7 +149,6 @@ public class UserService : IUserService
         _context.Orders.Update(order);
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
-
         
         return order;
     }
