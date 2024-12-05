@@ -66,9 +66,20 @@ builder.Services.AddAuthorization(options =>
                 context.User.HasClaim(claim => claim is { Type: ClaimTypes.Role, Value: "Relocator" })
             )
         );
-        // options.AddPolicy("ADMIN", policy => policy.RequireRole(UserRole.Admin.ToString().ToUpperInvariant()));
-        // options.AddPolicy("WORKER", policy => policy.RequireRole(UserRole.Picker.ToString().ToUpperInvariant()));
-        // options.AddPolicy("ADMINANDWORKER", policy => policy.RequireRole(UserRole.Picker.ToString(), UserRole.Admin.ToString().ToUpperInvariant()));
+        options.AddPolicy("Troubleshooting", policy =>
+            policy.RequireAssertion(context =>
+                context.User.HasClaim(claim => claim is { Type: ClaimTypes.Role, Value: "Troubleshooting" })
+            )
+        );
+        options.AddPolicy("PickerOrReacherOrRelocator", policy =>
+            policy.RequireAssertion(context =>
+                context.User.HasClaim(claim =>
+                    claim is { Type: ClaimTypes.Role, Value: "Picker" }
+                        or { Type: ClaimTypes.Role, Value: "Reacher" }
+                        or { Type: ClaimTypes.Role, Value: "Relocator" }
+                )
+            )
+        );
     }
 );
 

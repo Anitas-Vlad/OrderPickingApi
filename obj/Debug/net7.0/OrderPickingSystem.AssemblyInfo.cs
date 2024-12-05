@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OrderPickingSystem")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b212de66e2c175d3acccae6581516f5d0bc93fd1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
 [assembly: System.Reflection.AssemblyProductAttribute("OrderPickingSystem")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OrderPickingSystem")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

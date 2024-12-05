@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using OrderPickingSystem.Models;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OrderPickingSystem.Models.Orders;
 using OrderPickingSystem.Services.Interfaces;
 
@@ -16,10 +16,12 @@ public class OrdersController : ControllerBase
         _orderService = orderService;
     }
 
+    [Authorize(Policy = "Troubleshooting")]
     [HttpGet]
     public async Task<ActionResult<List<Order>>> GetAllOrders()
         => await _orderService.QueryAllOrders();
 
+    [Authorize(Policy = "Troubleshooting")]
     [HttpGet]
     [Route("/{orderId}")]
     public async Task<ActionResult<Order>> GetOrderById(int orderId)

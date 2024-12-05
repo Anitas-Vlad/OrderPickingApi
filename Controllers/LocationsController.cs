@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OrderPickingSystem.Models;
 using OrderPickingSystem.Services.Interfaces;
 
@@ -27,6 +28,7 @@ public class LocationsController : ControllerBase
         return location;
     }
 
+    [Authorize(Policy = "Picker")]
     [HttpPatch]
     [Route("/SetLocationsForPickingOrder")]
     public async Task<ActionResult> SetLocationsForPickingOrder()
@@ -36,6 +38,7 @@ public class LocationsController : ControllerBase
         return Ok("Locations set successfully.");
     }
     
+    [Authorize(Policy = "Reacher")]
     [HttpPatch]
     [Route("/SetLocationsForReachingOrder")]
     public async Task<ActionResult> SetLocationsForReachingOrder()
@@ -44,7 +47,8 @@ public class LocationsController : ControllerBase
 
         return Ok("Locations set successfully.");
     }
-
+    
+    [Authorize(Policy = "PickerOrReacherOrRelocator")]
     [HttpPost]
     [Route("/VerifyLocation")]
     public ActionResult VerifyLocation(int locationId)
@@ -54,4 +58,10 @@ public class LocationsController : ControllerBase
         _locationService.ScanLocation(expectedLocationId, locationId);
         return Ok("Location verified successfully.");
     }
+    
+    [Authorize(Policy = "Troubleshooting")]
+    [HttpGet]
+    [Route("/{locationId}")]
+    public async Task<Location> GetLocationById(int locationId)
+        => await _locationService.QueryLocationById(locationId);
 }

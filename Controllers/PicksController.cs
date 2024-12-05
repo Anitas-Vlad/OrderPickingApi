@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OrderPickingSystem.Models;
 using OrderPickingSystem.Models.Requests;
 using OrderPickingSystem.Services.Interfaces;
@@ -16,11 +17,13 @@ public class PicksController : ControllerBase
         _pickService = pickService;
     }
 
+    [Authorize(Policy = "Troubleshooting")]
     [HttpGet]
     [Route("/picks-{orderId}")]
     public async Task<ActionResult<List<Pick>>> GetPicksByOrderId(int orderId)
         => await _pickService.QueryPicksByOrderId(orderId);
 
+    [Authorize(Policy = "Troubleshooting")]
     [HttpGet]
     [Route("/picks-from-container-{containerId}")]
     public async Task<ActionResult<List<Pick>>> GetPicksFromContainer(string containerId)

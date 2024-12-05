@@ -6,6 +6,6 @@ public enum UserRole
     Picker,
     Reacher,
     Relocator,
-    TroubleShooter,
+    Troubleshooting,
     Store
 }

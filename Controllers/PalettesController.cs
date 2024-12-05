@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OrderPickingSystem.Models;
 using OrderPickingSystem.Services.Interfaces;
 
@@ -17,6 +18,7 @@ public class PalettesController : ControllerBase
         _orderService = orderService;
     }
 
+    [Authorize(Policy = "Troubleshooting")]
     [HttpGet]
     [Route("/{paletteId}")]
     public async Task<ActionResult<Palette>> GetPaletteById(string paletteId)

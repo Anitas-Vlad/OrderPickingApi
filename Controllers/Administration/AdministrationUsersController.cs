@@ -19,11 +19,10 @@ public class AdministrationUsersController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Roles = "Admin, Picker")]
     public async Task<ActionResult<List<User>>> GetUsers()
         => await _userService.QueryAllUsers();
     
-    [HttpPut]
+    [HttpPatch]
     [Route("/AddUserRole/User-{userId}/Role-{role}")]
     public async Task<User> AddRoleToUser(int userId, UserRole role)
         => await _userService.AddUserRole(userId, role);

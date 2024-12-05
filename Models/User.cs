@@ -10,7 +10,6 @@ public class User
     public int Id { get; set; }
     [Required] public string Username { get; set; } // TODO Replace Email with Username in JWT
     [Required] public string PasswordHash { get; set; }
-    // public List<UserRole> Roles { get; set; } = new List<UserRole>();
     public List<UserRoleMapping> UserRoles { get; set; }
     public Order? CurrentOrder { get; set; }
 

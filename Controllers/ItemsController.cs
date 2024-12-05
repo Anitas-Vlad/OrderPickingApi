@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OrderPickingSystem.Services.Interfaces;
 
 namespace OrderPickingSystem.Controllers;
@@ -14,6 +15,7 @@ public class ItemsController : ControllerBase
         _itemService = itemService;
     }
     
+    [Authorize(Policy = "Picker")]
     [HttpPost]
     [Route("/VerifyItem")]
     public ActionResult VerifyItem(int itemId)
