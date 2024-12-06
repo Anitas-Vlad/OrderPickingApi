@@ -23,7 +23,7 @@ public class ReachingOrderService : OrderService, IReachingOrderService
             .Where(order => order.ReplenishedRequestedItems.Any(item => item.ItemId == itemId))
             .ToListAsync();
 
-    public async void UpdateOrdersByReplenishedItemId(int itemId)
+    public async Task UpdateOrdersAfterReplenishmentByItemId(int itemId)
     {
         var orders = await QueryOrdersByReplenishItemId(itemId);
 

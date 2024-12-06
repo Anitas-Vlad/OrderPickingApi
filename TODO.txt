@@ -41,7 +41,8 @@ TODO * PickingOrder.ReplenishRequests
 - When the ready requests are completed, query -> order -> add to RequestedItems -> Enqueue
 
 TODO * Hangfire delete Unnecessary Unfinished picks from DB.
- 
+- When an order is finished, it is the moment when you are sure those picks are completely useless
+
 TODO * Users Clocking in and out
 - The time is calculated between clockIns/Outs
 - Working time is divided by 15min so if you have worked 7h:12min, it's calculated as 7 working hours.

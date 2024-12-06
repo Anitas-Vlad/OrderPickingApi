@@ -11,13 +11,13 @@ public class PickingOrder : Order
         RequiredRole = UserRole.Picker;
     }
 
-    public List<Palette> Palettes { get; set; }
+    public List<Palette> Palettes { get; set; } = new();
     public Palette? OngoingPalette { get; set; }
-    public List<Pick> Picks { get; set; }
-    public Pick OngoingPick { get; set; }
-    [Required] public List<PickRequest> RequestedItems { get; set; }
-    [Required] public List<PickRequest> ReplenishedRequestedItems { get; set; }
-    public Queue<Location> Locations { get; set; } //TODO Check
+    public List<Pick> Picks { get; set; } = new();
+    public Pick OngoingPick { get; set; } = new();
+    [Required] public List<PickRequest> RequestedItems { get; set; } = new();
+    [Required] public List<PickRequest> ReplenishedRequestedItems { get; set; } = new();
+    public Queue<Location> Locations { get; set; } = new();
 
     public void SetOngoingPickPaletteId(string paletteId)
         => OngoingPick.PaletteId = paletteId;
@@ -57,7 +57,7 @@ public class PickingOrder : Order
 
     public void UpdateAfterReplenishment(int itemId)
     {
-        var request = ReplenishedRequestedItems.First(request => request.ItemId == itemId);
+        var request = ReplenishedRequestedItems.First(requestedItem => requestedItem.ItemId == itemId);
         ReplenishedRequestedItems.Remove(request);
         RequestedItems.Add(request);
     }

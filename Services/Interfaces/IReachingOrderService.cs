@@ -2,5 +2,5 @@
 
 public interface IReachingOrderService
 {
-    
+    Task UpdateOrdersAfterReplenishmentByItemId(int itemId);
 }
