@@ -28,10 +28,14 @@ public class PicksController : ControllerBase
     [Route("/picks-from-container-{containerId}")]
     public async Task<ActionResult<List<Pick>>> GetPicksFromContainer(string containerId)
         => await _pickService.QueryPicksByContainerId(containerId);
-    
+
+    [Authorize(Policy = "Troubleshooting")]
+    [HttpGet]
+    [Route("picks-for-user-{userId}")]
+    public async Task<ActionResult<List<Pick>>> GetPicksForUser(int userId, DateTime? dateTime)
+        => await _pickService.QueryPicksForUser(userId, dateTime);
+
     [HttpPatch]
     public async Task CompletePick()
-    {
-        await _pickService.CompletePick();
-    }
+        => await _pickService.CompletePick();
 }

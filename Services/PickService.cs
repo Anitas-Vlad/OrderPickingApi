@@ -67,6 +67,33 @@ public class PickService : IPickService
             .OrderBy(pick => pick.DateTime)
             .ToListAsync();
 
+    public async Task<List<Pick>> QueryPicksForUser(int orderId, DateTime? dateTime)
+    {
+        var picks = _context.Picks
+            .Where(pick => pick.OrderId == orderId)
+            .OrderBy(pick => pick.DateTime);
+
+        if (!dateTime.HasValue)
+            return await picks.ToListAsync();
+
+        var result = await picks
+            .Where(pick => pick.DateTime.Day == dateTime.Value.Day)
+            .ToListAsync();
+        return result;
+    }
+
+    public async Task<List<Pick>> QueryPicksForUser(int userId)
+        => await _context.Picks
+            .Where(pick => pick.UserId == userId)
+            .OrderBy(pick => pick.DateTime)
+            .ToListAsync();
+
+    public async Task<List<Pick>> QueryPicksForUser(int userId, DateTime dateTime)
+        => await _context.Picks
+            .Where(pick => pick.UserId == userId && pick.DateTime.Day == dateTime.Day)
+            .OrderBy(pick => pick.DateTime)
+            .ToListAsync();
+
     public async Task CreatePick(string paletteId)
     {
         var pick = new Pick { PaletteId = paletteId };
