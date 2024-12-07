@@ -27,26 +27,6 @@ public class LocationsController : ControllerBase
 
         return location;
     }
-
-    [Authorize(Policy = "Picker")]
-    [HttpPatch]
-    [Route("/SetLocationsForPickingOrder")]
-    public async Task<ActionResult> SetLocationsForPickingOrder()
-    {
-        await _locationService.SetPickingLocations();
-
-        return Ok("Locations set successfully.");
-    }
-    
-    [Authorize(Policy = "Reacher")]
-    [HttpPatch]
-    [Route("/SetLocationsForReachingOrder")]
-    public async Task<ActionResult> SetLocationsForReachingOrder()
-    {
-        await _locationService.SetPickingLocations();
-
-        return Ok("Locations set successfully.");
-    }
     
     [Authorize(Policy = "PickerOrReacherOrRelocator")]
     [HttpPost]

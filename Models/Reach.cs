@@ -2,12 +2,7 @@
 
 namespace OrderPickingSystem.Models;
 
-public class Reach
+public class Reach : Relocation
 {
-    public int Id { get; set; }
-    [Required] public int InitialLocationId { get; set; }
-    [Required] public int DestinationLocationId { get; set; }
-    [Required] public int ItemId { get; set; }
-    [Required] public int UserId { get; set; }
-    [Required] public DateTime DateTime { get; set; }
+    
 }

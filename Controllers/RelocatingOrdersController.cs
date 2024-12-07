@@ -13,6 +13,13 @@ public class RelocatingOrdersController : ControllerBase
     {
         _relocatingOrderService = relocatingOrderService;
     }
-    
-    
+
+    [HttpPatch]
+    [Route("/TakeItemFromLocation")]
+    public async Task TakeItemFromLocation()
+    {
+        var initialLocationId = HttpContext.Session.GetInt32("InitialLocationId")!.Value;
+        
+        await _relocatingOrderService.TakeItemFromLocation(initialLocationId);
+    }
 }
