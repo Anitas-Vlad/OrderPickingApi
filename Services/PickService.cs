@@ -30,9 +30,6 @@ public class PickService : IPickService
     {
         var order = await _userContextService.QueryOngoingOrder();
 
-        if (order == null)
-            throw new ArgumentException("No ongoing order found.");
-
         if (order is not PickingOrder pickingOrder)
             throw new ArgumentException("Invalid Order.");
 

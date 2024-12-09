@@ -20,11 +20,21 @@ public class PickingOrderService : OrderService, IPickingOrderService
         _userContextService = userContextService;
     }
 
-    public new async Task<List<PickingOrder>> QueryAllOrders() 
+    public async Task<PickingOrder> QueryPickingOrderById(int orderId)
+    {
+        var order = await _context.PickingOrders
+            .Include(order => order.Picks)
+            .FirstOrDefaultAsync(order => order.Id == orderId);
+
+        if (order == null)
+            throw new ArgumentException("Order not found.");
+
+        return order;
+    }
+
+    public new async Task<List<PickingOrder>> QueryAllPickingOrders() 
         => await _context.PickingOrders.ToListAsync();
 
-    public Task<List<Pick>> QueryPicksByOrderId(int orderId)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<List<Pick>> QueryPicksByOrderId(int orderId) 
+        => (await QueryPickingOrderById(orderId)).Picks;
 }

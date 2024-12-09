@@ -5,7 +5,7 @@ namespace OrderPickingSystem.Services.Interfaces;
 
 public interface IPickingOrderService
 {
-    Task<List<PickingOrder>> QueryAllOrders();
+    Task<List<PickingOrder>> QueryAllPickingOrders();
     Task<List<Pick>> QueryPicksByOrderId(int orderId);
 
 }
