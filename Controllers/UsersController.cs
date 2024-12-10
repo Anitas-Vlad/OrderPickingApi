@@ -37,12 +37,15 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<Order>> TakeOrder(int orderId)
     {
         var order = await _userService.TakeOrder(orderId);
-        switch (order)
+        switch (order) //TODO Write this in different method. This one only takes the order. The other one sets locations
         {
             case ReachingOrder reachingOrder:
                 var request = reachingOrder.Request;
                 HttpContext.Session.SetInt32("InitialLocationId", request.InitialLocationId);
                 HttpContext.Session.SetInt32("DestinationLocationId", request.DestinationLocationId);
+                break;
+            
+            case RelocatingOrder relocatingOrder: //TODO
                 break;
         }
 

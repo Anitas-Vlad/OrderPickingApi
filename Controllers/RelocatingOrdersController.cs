@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OrderPickingSystem.Models.Orders;
 using OrderPickingSystem.Services.Interfaces;
 
 namespace OrderPickingSystem.Controllers;
@@ -8,18 +9,32 @@ namespace OrderPickingSystem.Controllers;
 public class RelocatingOrdersController : ControllerBase
 {
     private readonly IRelocatingOrderService _relocatingOrderService;
+    private readonly IRelocatingItemsService _relocatingItemsService;
 
-    public RelocatingOrdersController(IRelocatingOrderService relocatingOrderService)
+    public RelocatingOrdersController(IRelocatingOrderService relocatingOrderService, IRelocatingItemsService relocatingItemsService)
     {
         _relocatingOrderService = relocatingOrderService;
+        _relocatingItemsService = relocatingItemsService;
     }
+    
+    [HttpGet]
+    [Route("/RelocatingOrder-{orderId}")]
+    public async Task<ActionResult<RelocatingOrder>> GetRelocatingOrderById(int orderId)
+        => await _relocatingOrderService.QueryRelocatingOrderById(orderId);
 
+    [HttpGet]
+    public async Task<ActionResult<List<RelocatingOrder>>> GetRelocatingOrders()
+        => await _relocatingOrderService.QueryRelocatingOrders();
+    
     [HttpPatch]
     [Route("/TakeItemFromLocation")]
     public async Task TakeItemFromLocation()
     {
         var initialLocationId = HttpContext.Session.GetInt32("InitialLocationId")!.Value;
         
-        await _relocatingOrderService.TakeItemFromLocation(initialLocationId);
+        var relocation = await  _relocatingItemsService.TakeItemFromLocation(initialLocationId);
+        
+        HttpContext.Session.SetInt32("DestinationLocationId", relocation.Id);
+
     }
 }

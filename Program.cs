@@ -42,6 +42,7 @@ builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<IUserMapper, UserMapper>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRoleMappingService, UserRoleMappingService>();
+builder.Services.AddScoped<IRelocatingItemsService, RelocatingItemsService>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthorization(options =>

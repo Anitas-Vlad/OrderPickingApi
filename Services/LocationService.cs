@@ -35,7 +35,7 @@ public class LocationService : ILocationService
     {
         var location = await _context.Locations
             .Where(location => location.Floor > 1)
-            .FirstOrDefaultAsync(location => location.Item.Id == itemId);
+            .FirstOrDefaultAsync(location => location.Item.Id == itemId); //TODO
 
         if (location == null)
             throw new ArgumentException("There are no more ");
@@ -96,29 +96,24 @@ public class LocationService : ILocationService
 
         var item = location.Item;
         
-        item.SubtractItem(pick.Quantity);
+        item!.SubtractItem(pick.Quantity);
         
         _context.Items.Update(item);
         _context.Locations.Update(location);
     }
 
-    public async Task SetReachingLocations()
-    {
-        var order = await _userContextService.QueryOngoingOrder();
-    }
-
-    public async Task SetReachLocations() //TODO
+    public async Task SetReachingLocations() //TODO
     {
         var order = await _userContextService.QueryOngoingOrder();
 
-        if (order is not ReachingOrder reachOrder)
+        if (order is not ReachingOrder reachingOrder)
             throw new ArgumentException("This is not a reaching order.");
     }
 
-    public Task<Pick> PickFromLocation(CreatePickRequest request)
-    {
-        throw new NotImplementedException();
-    }
+    // public Task<Pick> PickFromLocation(CreatePickRequest request)
+    // {
+    //     throw new NotImplementedException();
+    // }
 
     public async Task<Location> QueryNextLocation()
     {

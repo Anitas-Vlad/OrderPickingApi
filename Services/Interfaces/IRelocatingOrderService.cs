@@ -1,8 +1,13 @@
-﻿using OrderPickingSystem.Models.TaskRequests;
+﻿using OrderPickingSystem.Models;
+using OrderPickingSystem.Models.Orders;
+using OrderPickingSystem.Models.TaskRequests;
 
 namespace OrderPickingSystem.Services.Interfaces;
 
 public interface IRelocatingOrderService
 {
-    Task TakeItemFromLocation(int  initialLocationId);
+    Task<RelocatingOrder> QueryRelocatingOrderById(int orderId);
+    Task<List<RelocatingOrder>> QueryRelocatingOrders();
+    Relocation CreateRelocation(int initialLocationId, int userId);
+    // Task TakeItemFromLocation(int  initialLocationId);
 }

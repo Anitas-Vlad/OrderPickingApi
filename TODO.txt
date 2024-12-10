@@ -49,4 +49,10 @@ TODO * Users Clocking in and out
 
 TODO * GetPicksForUser()
 - GetPicksForUser(int userId)
-- GetPicksForUser(int userId, DateTime? time) --- If has DateTime, select for that date.
+- GetPicksForUser(int userId, DateTime? time) --- It has DateTime, select for that date.
+
+TODO * Rename RelocatingOrderService into RelocatingItemsService
+
+TODO * VerifyLocation()
+- VerifyLocation() verifies for the Session.GetInt("ExpectedLocation") for now. 
+- For Relocating, the destinations have different names: "InitialLocationId" and "DestinationLocationId".
