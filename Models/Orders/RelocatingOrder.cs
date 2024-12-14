@@ -5,7 +5,6 @@ namespace OrderPickingSystem.Models.Orders;
 
 public class RelocatingOrder : Order
 {
-    public Item? Item { get; set; }
     public Queue<RelocateItemRequest> Requests { get; set; }
 
     public RelocatingOrder()

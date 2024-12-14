@@ -33,12 +33,13 @@ public class RelocatingOrderService : OrderService, IRelocatingOrderService
     public async Task<List<RelocatingOrder>> QueryRelocatingOrders()
         => await _context.RelocatingOrders.ToListAsync();
 
-    public Relocation CreateRelocation(int initialLocationId, int userId) //TODO Maybe I do this only at the end.
+    public Relocation CreateRelocation(int initialLocationId, int userId, int itemId) //TODO Maybe I do this only at the end.
     {
         var relocation = new Relocation()
         {
             InitialLocationId = initialLocationId,
-            UserId = userId
+            UserId = userId,
+            ItemId = itemId
         };
 
         _context.Relocations.Add(relocation);

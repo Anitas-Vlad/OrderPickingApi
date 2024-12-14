@@ -56,3 +56,12 @@ TODO * Rename RelocatingOrderService into RelocatingItemsService
 TODO * VerifyLocation()
 - VerifyLocation() verifies for the Session.GetInt("ExpectedLocation") for now. 
 - For Relocating, the destinations have different names: "InitialLocationId" and "DestinationLocationId".
+
+TODO * Process for starting Relocation/Reaching Order.
+- StartReachingOrder()
+SetRelocatingItemRequest()
+
+-StartRelocatingOrder()
+SetRelocatingItemRequests()
+Queue through the requests
+Just as in LocationsController.GetNextLocation(), write a method to set the initial/destination locations.

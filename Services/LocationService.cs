@@ -43,16 +43,6 @@ public class LocationService : ILocationService
         return location;
     }
 
-    public async Task RelocateItem(RelocateItemRequest request)
-    {
-        // var location = await QueryReachLocationByItemId(request.ItemId);
-        // var initialLocation = await QueryLocationById(request.InitialLocationId);
-        // var destinationLocation = await QueryLocationById(request.DestinationLocationId);
-        // var item = await _itemService.QueryItemById(request.ItemId);
-        
-        
-    }
-
     public async Task SetPickingLocations()
     {
         var order = await _userContextService.QueryOngoingOrder();
@@ -115,22 +105,22 @@ public class LocationService : ILocationService
     //     throw new NotImplementedException();
     // }
 
-    public async Task<Location> QueryNextLocation()
+    public async Task<Location> QueryNextLocation() //TODO refactor, maybe together with HandleNextPickingLocation because for relocations i'll have something else.
     {
         var order = await _userContextService.QueryOngoingOrder();
 
         return order switch
         {
             PickingOrder pickingOrder => await HandleNextPickingLocation(pickingOrder),
-            ReachingOrder reachingOrder => await HandleNextReachingLocation(reachingOrder),
-            _ => throw new ArgumentException("Unknown type of order.")
+            // ReachingOrder reachingOrder => await HandleNextReachingLocation(reachingOrder),
+            // _ => throw new ArgumentException("Unknown type of order.")
         };
     }
 
-    private async Task<Location> HandleNextReachingLocation(ReachingOrder reachingOrder)
-    {
-        throw new NotImplementedException();
-    }
+    // private async Task<Location> HandleNextReachingLocation(ReachingOrder reachingOrder)
+    // {
+    //     throw new NotImplementedException();
+    // }
 
     private async Task<Location> HandleNextPickingLocation(PickingOrder order)
     {

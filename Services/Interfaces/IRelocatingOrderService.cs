@@ -8,6 +8,6 @@ public interface IRelocatingOrderService
 {
     Task<RelocatingOrder> QueryRelocatingOrderById(int orderId);
     Task<List<RelocatingOrder>> QueryRelocatingOrders();
-    Relocation CreateRelocation(int initialLocationId, int userId);
+    Relocation CreateRelocation(int initialLocationId, int userId, int itemId);
     // Task TakeItemFromLocation(int  initialLocationId);
 }

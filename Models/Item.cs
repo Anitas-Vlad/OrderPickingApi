@@ -16,4 +16,6 @@ public class Item
         => Quantity >= requestedQuantity;
 
     public void RemoveFromLocation() => LocationId = 0;
+    public void RelocateToLocation(Location location) 
+        => LocationId = location.Id;
 }
