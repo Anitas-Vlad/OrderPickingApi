@@ -105,7 +105,7 @@ public class LocationService : ILocationService
     //     throw new NotImplementedException();
     // }
 
-    public async Task<Location> QueryNextLocation() //TODO refactor, maybe together with HandleNextPickingLocation because for relocations i'll have something else.
+    public async Task<Location> QueryNextPickingLocation() //TODO refactor, maybe together with HandleNextPickingLocation because for relocations i'll have something else.
     {
         var order = await _userContextService.QueryOngoingOrder();
 

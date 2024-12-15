@@ -18,9 +18,9 @@ public class LocationsController : ControllerBase
 
     [HttpGet]
     [Route("/NextLocation")]
-    public async Task<ActionResult<Location>> GetNextLocation()
+    public async Task<ActionResult<Location>> GetNextPickingLocation()
     {
-        var location = await _locationService.QueryNextLocation();
+        var location = await _locationService.QueryNextPickingLocation();
 
         HttpContext.Session.SetInt32("ExpectedLocationId", location.Id);
         HttpContext.Session.SetInt32("ExpectedItemId", location.GetItemId());

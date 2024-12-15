@@ -2,7 +2,7 @@
 
 namespace OrderPickingSystem.Models;
 
-public class Reach : Relocation
+public class Reach
 {
     
 }
