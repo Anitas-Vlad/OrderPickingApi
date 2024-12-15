@@ -37,7 +37,6 @@ public class RelocatingOrdersController : ControllerBase
         var relocation = await _relocatingItemsService.TakeItemFromLocation(initialLocationId);
 
         HttpContext.Session.SetInt32("OngoingRelocationId", relocation.Id);
-        HttpContext.Session.SetInt32("DestinationLocationId", relocation.Id);
     }
 
     [HttpPatch]
@@ -56,4 +55,12 @@ public class RelocatingOrdersController : ControllerBase
         return await _relocatingItemsService.CompleteRelocation(relocationId, destinationLocationId);
     }
 
+    [HttpPatch]
+    public async Task SetNextRelocatingItemRequestLocations()
+    {
+        var request = await _relocatingItemsService.QueryNextRelocationRequest();
+        
+        HttpContext.Session.SetInt32("InitialLocationId", request.InitialLocationId);
+        HttpContext.Session.SetInt32("DestinationLocationId", request.DestinationLocationId);
+    }
 }
